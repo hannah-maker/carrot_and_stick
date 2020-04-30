@@ -7,7 +7,7 @@ require './pdos/UserPdo.php';//로그인, 가입 등
 //require './pdos/BoardPdo.php';//게시판 관리
 require './pdos/ReviewPdo.php';
 require './pdos/MoviePdo.php';
-require './pdos/ScrapPdo.php';
+require './pdos/GoalPdo.php';
 
 use \Monolog\Logger as Logger;
 use Monolog\Handler\StreamHandler;
@@ -21,6 +21,16 @@ ini_set('default_charset', 'utf8mb4');
 //Main Server API
 $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) {
     /* ******************   Test   ****************** */
+
+//    $r->addRoute('GET', '/user', ['MainController', 'user']); //마이페이지 조회
+    $r->addRoute('POST', '/user', ['MainController', 'signUp']);
+    $r->addRoute('POST', '/user/token', ['MainController', 'login']);
+
+    $r->addRoute('GET', '/goal/recommendation', ['GoalController', 'login']);
+    $r->addRoute('POST', '/goal', ['GoalController', 'addGoal']);
+    $r->addRoute('GET', '/goal/ongoing', ['GoalController', 'ongoingGoal']);
+    $r->addRoute('GET', '/goal/finished', ['GoalController', 'finishedGoal']);
+
     $r->addRoute('GET', '/movie/latest', ['IndexController', 'movieGenre']);
 //    $r->addRoute('GET', '/movie/list', ['IndexController', 'movieList']);
     $r->addRoute('GET', '/genre', ['IndexController', 'genreList']);
@@ -78,9 +88,6 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) 
     $r->addRoute('GET', '/listTest', ['ScrapController', 'list']);
 //    $r->addRoute('GET', '/user', ['MainController', 'user']);//user/list 로 수정하면 사용가능 get url이 두개잖아.
     $r->addRoute('GET', '/user/all', ['MainController', 'userAll']);
-    $r->addRoute('GET', '/user', ['MainController', 'userDetail']);
-    $r->addRoute('POST', '/user', ['MainController', 'signUp']);
-    $r->addRoute('POST', '/user/token', ['MainController', 'login']);
 ////
 //    $r->addRoute('GET', '/user/article', ['MainController', 'myArticle']);
 //    $r->addRoute('GET', '/user/comment', ['IndexController', 'myComment']);
@@ -210,9 +217,9 @@ switch ($routeInfo[0]) {
                 $vars = $routeInfo[2];
                 require './controllers/ReviewController.php';
                 break;
-            case 'ScrapController':
+            case 'GoalController':
                 $handler = $routeInfo[1][1]; $vars = $routeInfo[2];
-                require './controllers/ScrapController.php';
+                require './controllers/GoalController.php';
                 break;
             /*case 'SearchController':
                 $handler = $routeInfo[1][1]; $vars = $routeInfo[2];

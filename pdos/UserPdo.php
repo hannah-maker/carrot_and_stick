@@ -1,10 +1,10 @@
 <?php
-function signUp($type, $id, $hash)
+function signUp($id, $pw, $nickName)
 {
     $pdo = pdoSqlConnect();
-    $query = "insert into User(subscriptionType,id,pw) values (?,?,?);";
+    $query = "insert into User(id, pw, nickName) values (?,?,?);";
     $st = $pdo->prepare($query);
-    $st->execute([$type, $id, $hash]);
+    $st->execute([$id, $pw, $nickName]);
     $st = null;
     $pdo = null;
 }
@@ -47,7 +47,7 @@ function login($id, $pw){
 
 function UserInfo($id){
     $pdo = pdoSqlConnect();
-    $query = "select id, name from User where id = ?";
+    $query = "select id, nickName, imageUrl from User where id = ?";
 
     $st = $pdo->prepare($query);
     $st->execute([$id]);

@@ -52,11 +52,9 @@ function deleteScrap($id, $contentsNo){
     $pdo = null;
 }
 
-function myScrap($id){
+function ongoingGoal($id){
     $pdo = pdoSqlConnect();
-    $query = "select no, title, posterUrl from Contents
-inner join (select userId, contentsNo, isDeleted from Scrap) scrapTB
-on Contents.no = scrapTB.contentsNo
+    $query = "select contents as goal, createdAt, isDeleted from GoalList
 where userId = ? and isDeleted = 'N'";
     $st = $pdo->prepare($query);
     $st->execute([$id]);
@@ -66,6 +64,20 @@ where userId = ? and isDeleted = 'N'";
     $pdo = null;
     return $res;
 }
+
+function finishedGoal($id){
+    $pdo = pdoSqlConnect();
+    $query = "select contents as goal, createdAt, isDeleted from GoalList
+where userId = ? and isDeleted = 'Y'";
+    $st = $pdo->prepare($query);
+    $st->execute([$id]);
+    $st->setFetchMode(PDO::FETCH_ASSOC);
+    $res = $st->fetchAll();
+    $st = null;
+    $pdo = null;
+    return $res;
+}
+
 
 function likes($id, $contentsNo){
     $pdo = pdoSqlConnect();

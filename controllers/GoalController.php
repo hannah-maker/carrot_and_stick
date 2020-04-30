@@ -14,6 +14,77 @@ try {
             echo "API ContentsServer";
             break;
 
+        case "addGoal":
+            $jwt = $_SERVER["HTTP_X_ACCESS_TOKEN"];//사용자가 가지고 있는 토큰이 유효한지 확인하고
+            if (!isValidHeader($jwt, JWT_SECRET_KEY)) {
+                $res->isSuccess = FALSE;
+                $res->code = 201;
+                $res->message = "유효하지 않은 토큰입니다";
+                echo json_encode($res, JSON_NUMERIC_CHECK);
+                addErrorLogs($errorLogs, $res, $req);
+                return;
+            }
+            $data = getDataByJWToken($jwt, JWT_SECRET_KEY);
+            $id = $data->id;
+            $contentsNo = $req->contentsNo;
+            $goal = $req->goal;
+
+            if(empty($goal)){
+                $res->isSucces = FALSE;
+                $res->code = 00;
+                $res->message = "공백이 입력되었습니다.";
+                echo json_encode($res, JSON_NUMERIC_CHECK);
+                return;
+            }else {
+                addGoal($id, $goal);
+                $res->isSuccess = TRUE;
+                $res->code = 77;
+                $res->message = "목표 추가";
+                echo json_encode($res, JSON_NUMERIC_CHECK);
+                break;
+            }
+
+        case "ongoingGoal":
+            $jwt = $_SERVER["HTTP_X_ACCESS_TOKEN"];//사용자가 가지고 있는 토큰이 유효한지 확인하고
+            if (!isValidHeader($jwt, JWT_SECRET_KEY)) {
+                $res->isSuccess = FALSE;
+                $res->code = 201;
+                $res->message = "유효하지 않은 토큰입니다";
+                echo json_encode($res, JSON_NUMERIC_CHECK);
+                addErrorLogs($errorLogs, $res, $req);
+                return;
+            }
+            $data = getDataByJWToken($jwt, JWT_SECRET_KEY);
+            $id = $data->id;
+            http_response_code(200);
+            $res->result = ongoingGoal($id);
+            $res->isSuccess = TRUE;
+            $res->code = 70;
+            $res->message = "진행중인 나의 목표 조회";
+            echo json_encode($res, JSON_NUMERIC_CHECK);
+            break;
+
+        case "finishedGoal":
+            $jwt = $_SERVER["HTTP_X_ACCESS_TOKEN"];//사용자가 가지고 있는 토큰이 유효한지 확인하고
+            if (!isValidHeader($jwt, JWT_SECRET_KEY)) {
+                $res->isSuccess = FALSE;
+                $res->code = 201;
+                $res->message = "유효하지 않은 토큰입니다";
+                echo json_encode($res, JSON_NUMERIC_CHECK);
+                addErrorLogs($errorLogs, $res, $req);
+                return;
+            }
+            $data = getDataByJWToken($jwt, JWT_SECRET_KEY);
+            $id = $data->id;
+            http_response_code(200);
+            $res->result = finishedGoal($id);
+            $res->isSuccess = TRUE;
+            $res->code = 71;
+            $res->message = "종료된 나의 목표 조회";
+            echo json_encode($res, JSON_NUMERIC_CHECK);
+            break;
+
+
         case "contentsScrap":
         {
             $jwt = $_SERVER["HTTP_X_ACCESS_TOKEN"];//사용자가 가지고 있는 토큰이 유효한지 확인하고
