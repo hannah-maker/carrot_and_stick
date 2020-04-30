@@ -25,6 +25,8 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) 
 //    $r->addRoute('GET', '/movie/list', ['IndexController', 'movieList']);
     $r->addRoute('GET', '/genre', ['IndexController', 'genreList']);
 
+    $r->addRoute('GET', '/test', ['IndexController', 'test']);
+
     $r->addRoute('GET', '/contents/{contentsNo}/detail', ['IndexController', 'movieDetail']);
 
     $r->addRoute('GET', '/movie/{genreNo}/list', ['IndexController', 'selectMovieGenre']); //장르별 영화 리스트

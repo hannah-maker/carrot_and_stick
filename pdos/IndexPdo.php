@@ -1,7 +1,7 @@
 <?php
 
 //READ
-function user()
+function userTest()
 {
     $pdo = pdoSqlConnect();
     $query = "SELECT * FROM User;";

@@ -30,6 +30,17 @@ try {
          * API Name : 테스트 API
          * 마지막 수정 날짜 : 19.04.29
          */
+
+
+        case "test":
+            http_response_code(200);
+            $res->result = userTest();
+            $res->isSuccess = TRUE;
+            $res->code = 100;
+            $res->message = "리뷰 검색";
+            echo json_encode($res, JSON_NUMERIC_CHECK);
+            break;
+
         case "selectMovieGenre":
             $lastNo = $_GET["lastNo"];
             $genreNo = $vars["genreNo"];

@@ -1,5 +1,23 @@
 <?php
 
+function userTest()
+{
+    $pdo = pdoSqlConnect();
+    $query = "SELECT * FROM User;";
+
+    $st = $pdo->prepare($query);
+    //    $st->execute([$param,$param]);
+    $st->execute();
+    $st->setFetchMode(PDO::FETCH_ASSOC);
+    $res = $st->fetchAll();
+
+    $st = null;
+    $pdo = null;
+
+    return $res;
+}
+
+
 function searchReview($name, $professor){
     $pdo = pdoSqlConnect();
     $query = "select name, professor, round(scoreAVG,1) as totalScore
