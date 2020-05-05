@@ -56,6 +56,15 @@ try {
             }
             $data = getDataByJWToken($jwt, JWT_SECRET_KEY);
             $id = $data->id;
+
+            if (ongoingGoal($id) == null) {
+                http_response_code(200);
+                $res->isSuccess = FALSE;
+                $res->code = 400;
+                $res->message = "진행중인 목표가 없습니다.";
+                echo json_encode($res, JSON_NUMERIC_CHECK);
+                return;
+            }
             http_response_code(200);
             $res->result = ongoingGoal($id);
             $res->isSuccess = TRUE;
@@ -76,6 +85,15 @@ try {
             }
             $data = getDataByJWToken($jwt, JWT_SECRET_KEY);
             $id = $data->id;
+
+            if (finishedGoal($id) == null) {
+                http_response_code(200);
+                $res->isSuccess = FALSE;
+                $res->code = 400;
+                $res->message = "진행중인 목표가 없습니다.";
+                echo json_encode($res, JSON_NUMERIC_CHECK);
+                return;
+            }
             http_response_code(200);
             $res->result = finishedGoal($id);
             $res->isSuccess = TRUE;
@@ -84,6 +102,134 @@ try {
             echo json_encode($res, JSON_NUMERIC_CHECK);
             break;
 
+        case "updateGoal":
+            $jwt = $_SERVER["HTTP_X_ACCESS_TOKEN"];//사용자가 가지고 있는 토큰이 유효한지 확인하고
+            if (!isValidHeader($jwt, JWT_SECRET_KEY)) {
+                $res->isSuccess = FALSE;
+                $res->code = 201;
+                $res->message = "유효하지 않은 토큰입니다";
+                echo json_encode($res, JSON_NUMERIC_CHECK);
+                addErrorLogs($errorLogs, $res, $req);
+                return;
+            }
+            $data = getDataByJWToken($jwt, JWT_SECRET_KEY);
+            $id = $data->id;
+            $goal = $req->goal;
+            $goalNo = $req->goalNo;
+
+            if(empty($goal)&&empty($goalNo)){
+                $res->isSucces = FALSE;
+                $res->code = 00;
+                $res->message = "공백이 입력되었습니다.";
+                echo json_encode($res, JSON_NUMERIC_CHECK);
+                return;
+            }else if (validNo($goalNo) == 0){
+                    $res->isSucces = FALSE;
+                    $res->code = 01;
+                    $res->message = "존재하지 않는 목표 번호입니다.";
+                    echo json_encode($res, JSON_NUMERIC_CHECK);
+                    return;
+                }
+                else{
+                        updateGoal($goal, $id, $goalNo);
+                        $res->isSuccess = TRUE;
+                        $res->code = 80;
+                        $res->message = "기존 목표 수정 성공";
+                        echo json_encode($res, JSON_NUMERIC_CHECK);
+                        break;
+                }
+
+        case "deleteGoal":
+            $jwt = $_SERVER["HTTP_X_ACCESS_TOKEN"];//사용자가 가지고 있는 토큰이 유효한지 확인하고
+            if (!isValidHeader($jwt, JWT_SECRET_KEY)) {
+                $res->isSuccess = FALSE;
+                $res->code = 201;
+                $res->message = "유효하지 않은 토큰입니다";
+                echo json_encode($res, JSON_NUMERIC_CHECK);
+                addErrorLogs($errorLogs, $res, $req);
+                return;
+            }
+            $data = getDataByJWToken($jwt, JWT_SECRET_KEY);
+            $id = $data->id;
+            $goalNo = $req->goalNo;
+
+            if(empty($goalNo)){
+                $res->isSucces = FALSE;
+                $res->code = 00;
+                $res->message = "공백이 입력되었습니다.";
+                echo json_encode($res, JSON_NUMERIC_CHECK);
+                return;
+            }else if (validNo($goalNo, $id) == 0){
+                $res->isSucces = FALSE;
+                $res->code = 01;
+                $res->message = "존재하지 않는 목표 번호입니다.";
+                echo json_encode($res, JSON_NUMERIC_CHECK);
+                return;
+            }else if(alreadyDelete($goalNo, $id)==1){
+                $res->isSucces = FALSE;
+                $res->code = 8;
+                $res->message = "이미 삭제된 목표 입니다.";
+                echo json_encode($res, JSON_NUMERIC_CHECK);
+                return;
+            }
+            else{
+                deleteGoal($id, $goalNo);
+                $res->isSuccess = TRUE;
+                $res->code = 81;
+                $res->message = "기존 목표 삭제 성공";
+                echo json_encode($res, JSON_NUMERIC_CHECK);
+                break;
+            }
+
+        case "goalCheck":
+            $jwt = $_SERVER["HTTP_X_ACCESS_TOKEN"];//사용자가 가지고 있는 토큰이 유효한지 확인하고
+            if (!isValidHeader($jwt, JWT_SECRET_KEY)) {
+                $res->isSuccess = FALSE;
+                $res->code = 201;
+                $res->message = "유효하지 않은 토큰입니다";
+                echo json_encode($res, JSON_NUMERIC_CHECK);
+                addErrorLogs($errorLogs, $res, $req);
+                return;
+            }
+            $data = getDataByJWToken($jwt, JWT_SECRET_KEY);
+            $id = $data->id;
+            $goalNo = $req->goalNo;
+
+            if (empty($goalNo)) {
+                $res->isSucces = FALSE;
+                $res->code = 00;
+                $res->message = "공백이 입력되었습니다.";
+                echo json_encode($res, JSON_NUMERIC_CHECK);
+                return;
+            } else if (!is_numeric($goalNo)) {
+                $res->isSucces = FALSE;
+                $res->code = 04;
+                $res->message = "번호를 숫자로 입력해주세요.";
+                echo json_encode($res, JSON_NUMERIC_CHECK);
+                return;
+            } else if (validNo($goalNo, $id) == 0){
+                $res->isSucces = FALSE;
+                $res->code = 01;
+                $res->message = "존재하지 않는 목표 번호입니다.";
+                echo json_encode($res, JSON_NUMERIC_CHECK);
+                return;
+            } else {
+                if (alreadyChecked($id, $goalNo)==1) {
+//                    $res->result = deleteCheck($id, $goalNo);
+                    $res->isSuccess = FALSE;
+                    $res->code = 201;
+                    $res->message = "스크랩 목록 삭제";
+                    echo json_encode($res, JSON_NUMERIC_CHECK);
+                    return;
+                } else {
+                    addCheck($id, $goalNo);
+                    $res->isSuccess = TRUE;
+                    $res->code = 100;
+                    $res->message = "스크랩 목록 추가";
+                    echo json_encode($res, JSON_NUMERIC_CHECK);
+                    break;
+                }
+            }
 
         case "contentsScrap":
         {

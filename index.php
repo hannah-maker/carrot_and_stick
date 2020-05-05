@@ -6,7 +6,7 @@ require './vendor/autoload.php';
 require './pdos/UserPdo.php';//로그인, 가입 등
 //require './pdos/BoardPdo.php';//게시판 관리
 require './pdos/ReviewPdo.php';
-require './pdos/MoviePdo.php';
+//require './pdos/MoviePdo.php';
 require './pdos/GoalPdo.php';
 
 use \Monolog\Logger as Logger;
@@ -22,7 +22,7 @@ ini_set('default_charset', 'utf8mb4');
 $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) {
     /* ******************   Test   ****************** */
 
-//    $r->addRoute('GET', '/user', ['MainController', 'user']); //마이페이지 조회
+    $r->addRoute('GET', '/user', ['MainController', 'user']); //마이페이지 조회
     $r->addRoute('POST', '/user', ['MainController', 'signUp']);
     $r->addRoute('POST', '/user/token', ['MainController', 'login']);
 
@@ -30,6 +30,10 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) 
     $r->addRoute('POST', '/goal', ['GoalController', 'addGoal']);
     $r->addRoute('GET', '/goal/ongoing', ['GoalController', 'ongoingGoal']);
     $r->addRoute('GET', '/goal/finished', ['GoalController', 'finishedGoal']);
+
+    $r->addRoute('PATCH', '/goal', ['GoalController', 'updateGoal']);
+    $r->addRoute('DELETE', '/goal', ['GoalController', 'deleteGoal']);
+    $r->addRoute('POST', '/goal/check', ['GoalController', 'goalCheck']);
 
     $r->addRoute('GET', '/movie/latest', ['IndexController', 'movieGenre']);
 //    $r->addRoute('GET', '/movie/list', ['IndexController', 'movieList']);

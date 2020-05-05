@@ -9,6 +9,28 @@ function addGoal($id, $goal){
     $pdo = null;
 }
 
+function deleteGoal($id, $goalNo){
+    $pdo = pdoSqlConnect();
+    $query = "UPDATE GoalList
+SET isDeleted = 'Y'
+WHERE userId = ? and no = ?;";
+    $st = $pdo->prepare($query);
+    $st->execute([$id, $goalNo]);
+    $st = null;
+    $pdo = null;
+}
+
+function updateGoal($goal, $id, $goalNo){
+    $pdo = pdoSqlConnect();
+    $query = "UPDATE GoalList
+SET contents = ?
+WHERE userId = ? and no = ?;";
+    $st = $pdo->prepare($query);
+    $st->execute([$goal, $id, $goalNo]);
+    $st = null;
+    $pdo = null;
+}
+
 function alreadyScrap($id, $contentsNo){
     $pdo = pdoSqlConnect();
     $query = "select exists (select * from Scrap where userId = ? and contentsNo =? and isDeleted = 'N') as exist;";
@@ -23,21 +45,21 @@ function alreadyScrap($id, $contentsNo){
     return intval($res[0]["exist"]);
 }
 
-function validNo($contentsNo){
+function validNo($goalNo, $userId){
     $pdo = pdoSqlConnect();
-    $query = "SELECT EXISTS(SELECT * FROM Contents WHERE no = ?) AS exist;";
+    $query = "SELECT EXISTS(SELECT * FROM GoalList WHERE no = ? and userId = ?) AS exist;";
     $st = $pdo->prepare($query);
-    $st->execute([$contentsNo]);
+    $st->execute([$goalNo, $userId]);
     $res = $st->fetchAll();
 
     return intval($res[0]["exist"]);
 }
 
-function validSeriesNo($contentsNo){
+function alreadyDelete($goalNo, $id){
     $pdo = pdoSqlConnect();
-    $query = "SELECT EXISTS(SELECT * FROM Series WHERE no = ?) AS exist;";
+    $query = "SELECT EXISTS(SELECT * FROM GoalList WHERE no = ? and userId = ? and isDeleted = 'Y') AS exist;";
     $st = $pdo->prepare($query);
-    $st->execute([$contentsNo]);
+    $st->execute([$goalNo, $id]);
     $res = $st->fetchAll();
 
     return intval($res[0]["exist"]);
@@ -52,10 +74,21 @@ function deleteScrap($id, $contentsNo){
     $pdo = null;
 }
 
+function deleteCheck($id, $goalNo){
+    $pdo = pdoSqlConnect();
+    $query = "UPDATE GoalCheck set isDeleted = 'Y' where DATE_FORMAT(createdAt, '%Y-%m-%d') = CURDATE() and
+                              userId = ? and goalNo = ? and isDeleted = 'N';";
+    $st = $pdo->prepare($query);
+    $st->execute([$id, $goalNo]);
+    $st = null;
+    $pdo = null;
+}
+
 function ongoingGoal($id){
     $pdo = pdoSqlConnect();
     $query = "select contents as goal, createdAt, isDeleted from GoalList
-where userId = ? and isDeleted = 'N'";
+where userId = ? and isDeleted = 'N'
+order by createdAt;";
     $st = $pdo->prepare($query);
     $st->execute([$id]);
     $st->setFetchMode(PDO::FETCH_ASSOC);
@@ -76,6 +109,29 @@ where userId = ? and isDeleted = 'Y'";
     $st = null;
     $pdo = null;
     return $res;
+}
+
+function addCheck($id, $goalNo){
+    $pdo = pdoSqlConnect();
+    $query = "insert into GoalCheck(userId, goalNo) values (?,?);";
+    $st = $pdo->prepare($query);
+    $st->execute([$id, $goalNo]);
+    $st = null;
+    $pdo = null;
+}
+
+function alreadyChecked($id, $goalNo){
+    $pdo = pdoSqlConnect();
+    $query = "SELECT EXISTS(SELECT * FROM GoalCheck WHERE DATE_FORMAT(createdAt, '%Y-%m-%d') = CURDATE() and
+                              userId = ? and goalNo = ?);";
+    $st = $pdo->prepare($query);
+    $st->execute([$id, $goalNo]);
+    $st->setFetchMode(PDO::FETCH_ASSOC);
+    $res = $st->fetchAll();
+
+    $st=null;$pdo = null;
+
+    return intval($res[0]["exist"]);
 }
 
 

@@ -233,11 +233,34 @@ try {
             http_response_code(200);
             $res->result = userInfo($id);
             $res->isSuccess = TRUE;
-            $res->code = 100;
-            $res->message = "내 정보 조회";
+            $res->code = 33;
+            $res->message = "로그인 한 사용자 정보 조회";
             echo json_encode($res, JSON_NUMERIC_CHECK);
             break;
         }
+
+        case "userDelete":
+        {
+            $jwt = $_SERVER["HTTP_X_ACCESS_TOKEN"];//사용자가 가지고 있는 토큰이 유효한지 확인하고
+            if (!isValidHeader($jwt, JWT_SECRET_KEY)) {
+                $res->isSuccess = FALSE;
+                $res->code = 201;
+                $res->message = "유효하지 않은 토큰입니다";
+                echo json_encode($res, JSON_NUMERIC_CHECK);
+                addErrorLogs($errorLogs, $res, $req);
+                return;
+            }
+            $data = getDataByJWToken($jwt, JWT_SECRET_KEY);
+            $id = $data->id;
+            http_response_code(200);
+            $res->result = userDelete($id);
+            $res->isSuccess = TRUE;
+            $res->code = 100;
+            $res->message = "사용자 탈퇴 완료";
+            echo json_encode($res, JSON_NUMERIC_CHECK);
+            break;
+        }
+
 
         case "userDetail" :
         {

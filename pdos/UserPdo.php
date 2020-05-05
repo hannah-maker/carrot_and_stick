@@ -45,10 +45,9 @@ function login($id, $pw){
     return intval($res[0]["exist"]);
 }
 
-function UserInfo($id){
+function userInfo($id){
     $pdo = pdoSqlConnect();
-    $query = "select id, nickName, imageUrl from User where id = ?";
-
+    $query = "select id, nickName, imgUrl from User where id = ?";
     $st = $pdo->prepare($query);
     $st->execute([$id]);
     $st->setFetchMode(PDO::FETCH_ASSOC);
