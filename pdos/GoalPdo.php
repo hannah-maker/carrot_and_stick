@@ -1,5 +1,32 @@
 <?php
 
+function goalList($id, $goalNo){
+    $pdo = pdoSqlConnect();
+    $query = "select no, contents, createdAt from GoalList
+where userId = ? and no = ? and isDeleted = 'N';";
+    $st = $pdo->prepare($query);
+    $st->execute([$id, $goalNo]);
+    $st->setFetchMode(PDO::FETCH_ASSOC);
+    $res = $st->fetchAll();
+    $st = null;
+    $pdo = null;
+    return $res[0];;
+}
+
+function checkList($id, $goalNo){
+    $pdo = pdoSqlConnect();
+    $query = "select createdAt from GoalCheck
+where userId = ? and goalNo = ? and isDeleted = 'N'
+order by createdAt desc;";
+    $st = $pdo->prepare($query);
+    $st->execute([$id, $goalNo]);
+    $st->setFetchMode(PDO::FETCH_ASSOC);
+    $res = $st->fetchAll();
+    $st = null;
+    $pdo = null;
+    return $res;
+}
+
 function addGoal($id, $goal){
     $pdo = pdoSqlConnect();
     $query = "insert into GoalList(userId, contents) values (?,?);";
@@ -123,7 +150,7 @@ function addCheck($id, $goalNo){
 function alreadyChecked($id, $goalNo){
     $pdo = pdoSqlConnect();
     $query = "SELECT EXISTS(SELECT * FROM GoalCheck WHERE DATE_FORMAT(createdAt, '%Y-%m-%d') = CURDATE() and
-                              userId = ? and goalNo = ?);";
+                              userId = ? and goalNo = ? and isDeleted = 'N') as exist;";
     $st = $pdo->prepare($query);
     $st->execute([$id, $goalNo]);
     $st->setFetchMode(PDO::FETCH_ASSOC);

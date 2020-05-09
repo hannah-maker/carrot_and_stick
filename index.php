@@ -30,6 +30,7 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) 
     $r->addRoute('POST', '/goal', ['GoalController', 'addGoal']);
     $r->addRoute('GET', '/goal/ongoing', ['GoalController', 'ongoingGoal']);
     $r->addRoute('GET', '/goal/finished', ['GoalController', 'finishedGoal']);
+    $r->addRoute('GET', '/goal/{goalNo}', ['GoalController', 'goalListDetail']);
 
     $r->addRoute('PATCH', '/goal', ['GoalController', 'updateGoal']);
     $r->addRoute('DELETE', '/goal', ['GoalController', 'deleteGoal']);

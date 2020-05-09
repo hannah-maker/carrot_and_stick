@@ -73,6 +73,40 @@ try {
             echo json_encode($res, JSON_NUMERIC_CHECK);
             break;
 
+        case "goalListDetail":
+
+            $jwt = $_SERVER["HTTP_X_ACCESS_TOKEN"];//사용자가 가지고 있는 토큰이 유효한지 확인하고
+            if (!isValidHeader($jwt, JWT_SECRET_KEY)) {
+                $res->isSuccess = FALSE;
+                $res->code = 201;
+                $res->message = "유효하지 않은 토큰입니다";
+                echo json_encode($res, JSON_NUMERIC_CHECK);
+                addErrorLogs($errorLogs, $res, $req);
+                return;
+            }
+            $data = getDataByJWToken($jwt, JWT_SECRET_KEY);
+            $id = $data->id;
+            $goalNo = $vars["goalNo"];
+
+            if (ongoingGoal($id) == null) {
+                http_response_code(200);
+                $res->isSuccess = FALSE;
+                $res->code = 400;
+                $res->message = "진행중인 목표가 없습니다.";
+                echo json_encode($res, JSON_NUMERIC_CHECK);
+                return;
+            }
+            http_response_code(200);
+            $res->result = (Object)Array();
+            $res->result = goalList($id, $goalNo);
+            $res->result["checkResult"] = checkList($id, $goalNo);
+            $res->isSuccess = TRUE;
+            $res->code = 50;
+            $res->message = "목표와 목표 별 수행 날짜 조회";
+            echo json_encode($res, JSON_NUMERIC_CHECK);
+            break;
+
+
         case "finishedGoal":
             $jwt = $_SERVER["HTTP_X_ACCESS_TOKEN"];//사용자가 가지고 있는 토큰이 유효한지 확인하고
             if (!isValidHeader($jwt, JWT_SECRET_KEY)) {
@@ -214,18 +248,18 @@ try {
                 echo json_encode($res, JSON_NUMERIC_CHECK);
                 return;
             } else {
-                if (alreadyChecked($id, $goalNo)==1) {
-//                    $res->result = deleteCheck($id, $goalNo);
+                if (alreadyChecked($id, $goalNo)) {
+                    deleteCheck($id, $goalNo);
                     $res->isSuccess = FALSE;
-                    $res->code = 201;
-                    $res->message = "스크랩 목록 삭제";
+                    $res->code = 90;
+                    $res->message = "일일 목표 체크 삭제";
                     echo json_encode($res, JSON_NUMERIC_CHECK);
                     return;
                 } else {
                     addCheck($id, $goalNo);
                     $res->isSuccess = TRUE;
-                    $res->code = 100;
-                    $res->message = "스크랩 목록 추가";
+                    $res->code = 91;
+                    $res->message = "일일 목표 체크 추가";
                     echo json_encode($res, JSON_NUMERIC_CHECK);
                     break;
                 }
