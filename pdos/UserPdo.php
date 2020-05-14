@@ -1,10 +1,10 @@
 <?php
-function signUp($id, $pw, $nickName)
+function signUp($id, $hash, $nickName)
 {
     $pdo = pdoSqlConnect();
     $query = "insert into User(id, pw, nickName) values (?,?,?);";
     $st = $pdo->prepare($query);
-    $st->execute([$id, $pw, $nickName]);
+    $st->execute([$id, $hash, $nickName]);
     $st = null;
     $pdo = null;
 }

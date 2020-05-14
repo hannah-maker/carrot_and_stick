@@ -113,7 +113,7 @@ function deleteCheck($id, $goalNo){
 
 function ongoingGoal($id){
     $pdo = pdoSqlConnect();
-    $query = "select contents as goal, createdAt, isDeleted from GoalList
+    $query = "select no, contents as goal, createdAt, isDeleted from GoalList
 where userId = ? and isDeleted = 'N'
 order by createdAt;";
     $st = $pdo->prepare($query);
@@ -123,6 +123,19 @@ order by createdAt;";
     $st = null;
     $pdo = null;
     return $res;
+}
+
+function latestGoal($id){
+    $pdo = pdoSqlConnect();
+    $query = "SELECT no FROM GoalList WHERE userId = ?
+ORDER BY createdAt DESC limit 1;";
+    $st = $pdo->prepare($query);
+    $st->execute([$id]);
+    $st->setFetchMode(PDO::FETCH_ASSOC);
+    $res = $st->fetchAll();
+    $st = null;
+    $pdo = null;
+    return $res[0];
 }
 
 function finishedGoal($id){

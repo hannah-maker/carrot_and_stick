@@ -103,8 +103,8 @@ try {
                     echo json_encode($res, JSON_NUMERIC_CHECK);
                     return;
                 } else {
-//                    $hash = password_hash($pw, PASSWORD_DEFAULT);
-                    $res->result = signUp($id, $pw, $nickName);
+                    $hash = password_hash($pw, PASSWORD_DEFAULT);
+                    $res->result = signUp($id, $hash, $nickName);
                     $res->isSuccess = TRUE;
                     $res->code = 100;
                     $res->message = "회원 가입 성공!";
@@ -118,54 +118,12 @@ try {
                 return;
             }
         }
-
-        case "login":
-        {
-            $id = $req->id;
-            $pw = $req->pw;
-            http_response_code(200);
-            if (empty($id) || empty($pw)) {
-                $res->isSucces = FALSE;
-                $res->code = 00;
-                $res->message = "공백이 입력됐습니다.";
-                echo json_encode($res, JSON_NUMERIC_CHECK);
-                return;
-            } else {
-                if (validUser($id)==0) {
-                    $res->isSuccess = FALSE;
-                    $res->code = 21;
-                    $res->message = "유효하지 않은 아이디 입니다.";
-                    echo json_encode($res, JSON_NUMERIC_CHECK);
-                    return;
-                } else if(!validPw($id, $pw)){
-                    $res->isSuccess = FALSE;
-                    $res->code = 22;
-                    $res->message = "유효하지 않은 비밀번호... 입니다.";
-                    echo json_encode($res, JSON_NUMERIC_CHECK);
-                    return;
-                }
-                else {
-                    $jwt = getJWToken($id, $pw, JWT_SECRET_KEY);
-                    $res->result["jwt"] = $jwt;
-                    $res->isSuccess = TRUE;
-                    $res->code = 20;
-                    $res->message = "로그인 성공";
-                    echo json_encode($res, JSON_NUMERIC_CHECK);
-                    break;
-                }
-            }
-        }
-
+//
 //        case "login":
+//        {
 //            $id = $req->id;
 //            $pw = $req->pw;
-//            $conn = mysqli_connect("database-1.cdv6gaks3mrb.ap-northeast-2.rds.amazonaws.com", "admin", "Hsh0913**", "Carrot");
-//            mysqli_set_charset($conn, "utf8");
-//            $sql = "select pw from User where id = '$id'";
-//            $resp = mysqli_query($conn, $sql);
-//            $row = mysqli_fetch_array($resp);
-//            $hash = $row['pw'];
-//
+//            http_response_code(200);
 //            if (empty($id) || empty($pw)) {
 //                $res->isSucces = FALSE;
 //                $res->code = 00;
@@ -173,31 +131,77 @@ try {
 //                echo json_encode($res, JSON_NUMERIC_CHECK);
 //                return;
 //            } else {
-//                if (!validUser($id)) {
+//                if (validUser($id)==0) {
 //                    $res->isSuccess = FALSE;
-//                    $res->code = 100;
+//                    $res->code = 21;
 //                    $res->message = "유효하지 않은 아이디 입니다.";
+//                    echo json_encode($res, JSON_NUMERIC_CHECK);
+//                    return;
+//                } else if(!validPw($id, $pw)){
+//                    $res->isSuccess = FALSE;
+//                    $res->code = 22;
+//                    $res->message = "유효하지 않은 비밀번호... 입니다.";
 //                    echo json_encode($res, JSON_NUMERIC_CHECK);
 //                    return;
 //                }
 //                else {
-//                    if (password_verify($pw ,$hash)) {
-//                        $jwt = getJWToken($id, $hash, JWT_SECRET_KEY);
-//                        $res->result["jwt"] = $jwt;
-//                        $res->isSuccess = TRUE;
-//                        $res->code = 100;
-//                        $res->message = "로그인 성공";
-//                        echo json_encode($res, JSON_NUMERIC_CHECK);
-//                        break;
-//                    } else {
-//                        $res->isSuccess = FALSE;
-//                        $res->code = 100;
-//                        $res->message = "비밀번호가 일치하지 않습니다.";
-//                        echo json_encode($res, JSON_NUMERIC_CHECK);
-//                        break;
-//                    }
+//                    $jwt = getJWToken($id, $pw, JWT_SECRET_KEY);
+//                    $res->result["jwt"] = $jwt;
+//                    $res->isSuccess = TRUE;
+//                    $res->code = 20;
+//                    $res->message = "로그인 성공";
+//                    echo json_encode($res, JSON_NUMERIC_CHECK);
+//                    break;
 //                }
-//                }
+//            }
+//        }
+
+        case "login":
+            $id = $req->id;
+            $pw = $req->pw;
+            $conn = mysqli_connect("database-1.cdv6gaks3mrb.ap-northeast-2.rds.amazonaws.com", "admin", "Hsh0913**", "Carrot");
+            if (mysqli_connect_errno())
+            {
+                echo "Failed to connect to MySQL: " . mysqli_connect_error();
+            }
+            mysqli_set_charset($conn, "utf8");
+            $sql = "select pw from User where id = '$id'";
+            $resp = mysqli_query($conn, $sql);
+            $row = mysqli_fetch_array($resp);
+            $hash = $row['pw'];
+
+            if (empty($id) || empty($pw)) {
+                $res->isSucces = FALSE;
+                $res->code = 00;
+                $res->message = "공백이 입력됐습니다.";
+                echo json_encode($res, JSON_NUMERIC_CHECK);
+                return;
+            } else {
+                if (!validUser($id)) {
+                    $res->isSuccess = FALSE;
+                    $res->code = 100;
+                    $res->message = "유효하지 않은 아이디 입니다.";
+                    echo json_encode($res, JSON_NUMERIC_CHECK);
+                    return;
+                }
+                else {
+                    if (password_verify($pw ,$hash)) {
+                        $jwt = getJWToken($id, $hash, JWT_SECRET_KEY);
+                        $res->result["jwt"] = $jwt;
+                        $res->isSuccess = TRUE;
+                        $res->code = 100;
+                        $res->message = "로그인 성공";
+                        echo json_encode($res, JSON_NUMERIC_CHECK);
+                        break;
+                    } else {
+                        $res->isSuccess = FALSE;
+                        $res->code = 100;
+                        $res->message = "비밀번호가 일치하지 않습니다.";
+                        echo json_encode($res, JSON_NUMERIC_CHECK);
+                        break;
+                    }
+                }
+                }
 
         case "validateJWT" :
             $jwt = $_SERVER["HTTP_X_ACCESS_TOKEN"];//사용자가 가지고 있는 토큰이 유효한지 확인하고

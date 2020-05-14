@@ -37,6 +37,7 @@ try {
                 return;
             }else {
                 addGoal($id, $goal);
+                $res->goalNo = latestGoal($id);
                 $res->isSuccess = TRUE;
                 $res->code = 77;
                 $res->message = "목표 추가";
@@ -88,7 +89,7 @@ try {
             $id = $data->id;
             $goalNo = $vars["goalNo"];
 
-            if (ongoingGoal($id) == null) {
+            if (ongoingGoal($goalNo) == null) {
                 http_response_code(200);
                 $res->isSuccess = FALSE;
                 $res->code = 400;
@@ -96,15 +97,17 @@ try {
                 echo json_encode($res, JSON_NUMERIC_CHECK);
                 return;
             }
-            http_response_code(200);
-            $res->result = (Object)Array();
-            $res->result = goalList($id, $goalNo);
-            $res->result["checkResult"] = checkList($id, $goalNo);
-            $res->isSuccess = TRUE;
-            $res->code = 50;
-            $res->message = "목표와 목표 별 수행 날짜 조회";
-            echo json_encode($res, JSON_NUMERIC_CHECK);
-            break;
+            else {
+                http_response_code(200);
+                $res->result = (Object)Array();
+                $res->result = goalList($id, $goalNo);
+                $res->result["checkResult"] = checkList($id, $goalNo);
+                $res->isSuccess = TRUE;
+                $res->code = 50;
+                $res->message = "목표와 목표 별 수행 날짜 조회";
+                echo json_encode($res, JSON_NUMERIC_CHECK);
+                break;
+            }
 
 
         case "finishedGoal":

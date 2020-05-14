@@ -13,7 +13,7 @@ try {
     addAccessLogs($accessLogs, $req);
     switch ($handler) {
         case "index":
-            echo "API Server carrot new";
+            echo "API Server carrot domain check";
             break;
         case "ACCESS_LOGS":
             //            header('content-type text/html charset=utf-8');
