@@ -89,7 +89,7 @@ try {
             $id = $data->id;
             $goalNo = $vars["goalNo"];
 
-            if (ongoingGoal($goalNo) == null) {
+            if (validNo($goalNo, $id) == 0) {
                 http_response_code(200);
                 $res->isSuccess = FALSE;
                 $res->code = 400;
@@ -160,7 +160,7 @@ try {
                 $res->message = "공백이 입력되었습니다.";
                 echo json_encode($res, JSON_NUMERIC_CHECK);
                 return;
-            }else if (validNo($goalNo) == 0){
+            }else if (validNo($goalNo, $id) == 0){
                     $res->isSucces = FALSE;
                     $res->code = 01;
                     $res->message = "존재하지 않는 목표 번호입니다.";
