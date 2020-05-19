@@ -74,7 +74,7 @@ function alreadyScrap($id, $contentsNo){
 
 function validNo($goalNo, $userId){
     $pdo = pdoSqlConnect();
-    $query = "SELECT EXISTS(SELECT * FROM GoalList WHERE no = ? and userId = ?) AS exist;";
+    $query = "SELECT EXISTS(SELECT * FROM GoalList WHERE no = ? and userId = ? and isDeleted = 'N') AS exist;";
     $st = $pdo->prepare($query);
     $st->execute([$goalNo, $userId]);
     $res = $st->fetchAll();
@@ -174,6 +174,204 @@ function alreadyChecked($id, $goalNo){
     return intval($res[0]["exist"]);
 }
 
+function oneDayDone($id, $goalNo){
+    $pdo = pdoSqlConnect();
+    $query = "SELECT EXISTS(SELECT * FROM (SELECT curr.goalNo
+     , curr.createdAt
+     , 1 + DATEDIFF(curr.createdAt, MAX(streak.createdAt)) AS consecutive
+  FROM GoalCheck curr
+  LEFT OUTER
+  JOIN (SELECT *
+             , CASE
+                 WHEN DATEDIFF(createdAt, prev) = 1 THEN 1
+                 ELSE 0
+               END AS diff
+          FROM (SELECT *
+                     , (SELECT MAX(createdAt)
+                          FROM GoalCheck
+                         WHERE goalNo = top.goalNo
+                           AND createdAt < top.createdAt)  AS Prev
+                  FROM GoalCheck top
+		     ) withPrev
+     ) streak
+    ON streak.goalNo = curr.goalNo
+   AND streak.createdAt <= curr.createdAt
+   AND streak.diff = 0
+    WHERE curr.isDeleted = 'N' and streak.isDeleted = 'N'
+            and curr.userId = ? and streak.userId = curr.userId
+            and curr.goalNo = ? and streak.goalNo = curr.goalNo
+ GROUP BY curr.goalNo, curr.createdAt
+ ORDER BY curr.goalNo, curr.createdAt) checkDate
+WHERE consecutive = 1 AND DATE_FORMAT(createdAt, '%Y-%m-%d') = CURDATE()
+ORDER BY createdAt limit 1) as exist;";
+    $st = $pdo->prepare($query);
+    $st->execute([$id, $goalNo]);
+    $st->setFetchMode(PDO::FETCH_ASSOC);
+    $res = $st->fetchAll();
+
+    $st=null;$pdo = null;
+
+    return intval($res[0]["exist"]);
+}
+
+function threeDaysDone($id, $goalNo){
+    $pdo = pdoSqlConnect();
+    $query = "SELECT EXISTS(SELECT * FROM (SELECT curr.goalNo
+     , curr.createdAt
+     , 1 + DATEDIFF(curr.createdAt, MAX(streak.createdAt)) AS consecutive
+  FROM GoalCheck curr
+  LEFT OUTER
+  JOIN (SELECT *
+             , CASE
+                 WHEN DATEDIFF(createdAt, prev) = 1 THEN 1
+                 ELSE 0
+               END AS diff
+          FROM (SELECT *
+                     , (SELECT MAX(createdAt)
+                          FROM GoalCheck
+                         WHERE goalNo = top.goalNo
+                           AND createdAt < top.createdAt)  AS Prev
+                  FROM GoalCheck top
+		     ) withPrev
+     ) streak
+    ON streak.goalNo = curr.goalNo
+   AND streak.createdAt <= curr.createdAt
+   AND streak.diff = 0
+    WHERE curr.isDeleted = 'N' and streak.isDeleted = 'N'
+            and curr.userId = ? and streak.userId = curr.userId
+            and curr.goalNo = ? and streak.goalNo = curr.goalNo
+ GROUP BY curr.goalNo, curr.createdAt
+ ORDER BY curr.goalNo, curr.createdAt) checkDate
+WHERE consecutive = 3 AND DATE_FORMAT(createdAt, '%Y-%m-%d') = CURDATE()
+ORDER BY createdAt limit 1) as exist;";
+    $st = $pdo->prepare($query);
+    $st->execute([$id, $goalNo]);
+    $st->setFetchMode(PDO::FETCH_ASSOC);
+    $res = $st->fetchAll();
+
+    $st=null;$pdo = null;
+
+    return intval($res[0]["exist"]);
+}
+
+function fiveDaysDone($id, $goalNo){
+    $pdo = pdoSqlConnect();
+    $query = "SELECT EXISTS(SELECT * FROM (SELECT curr.goalNo
+     , curr.createdAt
+     , 1 + DATEDIFF(curr.createdAt, MAX(streak.createdAt)) AS consecutive
+  FROM GoalCheck curr
+  LEFT OUTER
+  JOIN (SELECT *
+             , CASE
+                 WHEN DATEDIFF(createdAt, prev) = 1 THEN 1
+                 ELSE 0
+               END AS diff
+          FROM (SELECT *
+                     , (SELECT MAX(createdAt)
+                          FROM GoalCheck
+                         WHERE goalNo = top.goalNo
+                           AND createdAt < top.createdAt)  AS Prev
+                  FROM GoalCheck top
+		     ) withPrev
+     ) streak
+    ON streak.goalNo = curr.goalNo
+   AND streak.createdAt <= curr.createdAt
+   AND streak.diff = 0
+    WHERE curr.isDeleted = 'N' and streak.isDeleted = 'N'
+            and curr.userId = ? and streak.userId = curr.userId
+            and curr.goalNo = ? and streak.goalNo = curr.goalNo
+ GROUP BY curr.goalNo, curr.createdAt
+ ORDER BY curr.goalNo, curr.createdAt) checkDate
+WHERE consecutive = 5 AND DATE_FORMAT(createdAt, '%Y-%m-%d') = CURDATE()
+ORDER BY createdAt limit 1) as exist;";
+    $st = $pdo->prepare($query);
+    $st->execute([$id, $goalNo]);
+    $st->setFetchMode(PDO::FETCH_ASSOC);
+    $res = $st->fetchAll();
+
+    $st=null;$pdo = null;
+
+    return intval($res[0]["exist"]);
+}
+
+function tenDaysDone($id, $goalNo){
+    $pdo = pdoSqlConnect();
+    $query = "SELECT EXISTS(SELECT * FROM (SELECT curr.goalNo
+     , curr.createdAt
+     , 1 + DATEDIFF(curr.createdAt, MAX(streak.createdAt)) AS consecutive
+  FROM GoalCheck curr
+  LEFT OUTER
+  JOIN (SELECT *
+             , CASE
+                 WHEN DATEDIFF(createdAt, prev) = 1 THEN 1
+                 ELSE 0
+               END AS diff
+          FROM (SELECT *
+                     , (SELECT MAX(createdAt)
+                          FROM GoalCheck
+                         WHERE goalNo = top.goalNo
+                           AND createdAt < top.createdAt)  AS Prev
+                  FROM GoalCheck top
+		     ) withPrev
+     ) streak
+    ON streak.goalNo = curr.goalNo
+   AND streak.createdAt <= curr.createdAt
+   AND streak.diff = 0
+    WHERE curr.isDeleted = 'N' and streak.isDeleted = 'N'
+            and curr.userId = ? and streak.userId = curr.userId
+            and curr.goalNo = ? and streak.goalNo = curr.goalNo
+ GROUP BY curr.goalNo, curr.createdAt
+ ORDER BY curr.goalNo, curr.createdAt) checkDate
+WHERE consecutive = 10 AND DATE_FORMAT(createdAt, '%Y-%m-%d') = CURDATE()
+ORDER BY createdAt limit 1) as exist;";
+    $st = $pdo->prepare($query);
+    $st->execute([$id, $goalNo]);
+    $st->setFetchMode(PDO::FETCH_ASSOC);
+    $res = $st->fetchAll();
+
+    $st=null;$pdo = null;
+
+    return intval($res[0]["exist"]);
+}
+
+function getCollectionOneDone($id, $goalNo){
+    $pdo = pdoSqlConnect();
+    $query = "insert into HavingCollection(userId, goalNo, collectionNo) values (?,?,4);";
+    $st = $pdo->prepare($query);
+    $st->execute([$id, $goalNo]);
+    $st = null;
+    $pdo = null;
+}
+
+function alreadySetCollection($id, $goalNo, $collectionNo){
+    $pdo = pdoSqlConnect();
+    $query = "SELECT EXISTS(SELECT * FROM HavingCollection
+    WHERE userId = ? and goalNo =? and collectionNo =?) as exist;";
+    $st = $pdo->prepare($query);
+    $st->execute([$id, $goalNo, $collectionNo]);
+
+    $st->setFetchMode(PDO::FETCH_ASSOC);
+    $res = $st->fetchAll();
+
+    $st=null;$pdo = null;
+
+    return intval($res[0]["exist"]);
+}
+
+function getUserCollection($id){
+    $pdo = pdoSqlConnect();
+    $query = "SELECT collectionTB.no, imageUrl FROM HavingCollection
+INNER JOIN (SELECT * FROM Collection) collectionTB
+on collectionNo = collectionTB.no
+WHERE userId = ?";
+    $st = $pdo->prepare($query);
+    $st->execute([$id]);
+    $st->setFetchMode(PDO::FETCH_ASSOC);
+    $res = $st->fetchAll();
+    $st = null;
+    $pdo = null;
+    return $res;
+}
 
 function likes($id, $contentsNo){
     $pdo = pdoSqlConnect();

@@ -93,7 +93,7 @@ try {
                 http_response_code(200);
                 $res->isSuccess = FALSE;
                 $res->code = 400;
-                $res->message = "진행중인 목표가 없습니다.";
+                $res->message = "종료됐거나 존재하지 않는 목표 번호입니다.";
                 echo json_encode($res, JSON_NUMERIC_CHECK);
                 return;
             }

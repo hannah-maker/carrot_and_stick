@@ -36,6 +36,9 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) 
     $r->addRoute('DELETE', '/goal', ['GoalController', 'deleteGoal']);
     $r->addRoute('POST', '/goal/check', ['GoalController', 'goalCheck']);
 
+    $r->addRoute('POST', '/collection', ['IndexController', 'postCollection']);
+    $r->addRoute('GET', '/collection', ['IndexController', 'getCollection']);
+
     $r->addRoute('GET', '/movie/latest', ['IndexController', 'movieGenre']);
 //    $r->addRoute('GET', '/movie/list', ['IndexController', 'movieList']);
     $r->addRoute('GET', '/genre', ['IndexController', 'genreList']);
