@@ -44,7 +44,6 @@ try {
             $data = getDataByJWToken($jwt, JWT_SECRET_KEY);
             $id = $data->id;
             $goalNo = $req->goalNo;
-
             if(empty($goalNo)){
                 $res->isSucces = FALSE;
                 $res->code = 00;
@@ -59,32 +58,47 @@ try {
                 return;
             }
             else{
-                $collectionNo = 4;
-                if(alreadySetCollection($id, $goalNo, $collectionNo)==1){
-                    $res->isSuccess = FALSE;
-                    $res->code = 444;
-                    $res->message = "이미 해당 목표에 같은 컬렉션이 발급되었습니다.";
-                    echo json_encode($res, JSON_NUMERIC_CHECK);
-                    return;
-                }
-                else{
-                    if(oneDayDone($id, $goalNo)==1) {
-                        getCollectionOneDone($id, $goalNo);
+                    if(oneDayDone($id, $goalNo)&&(!alreadySetCollectionFour($id, $goalNo))) {
+                        getCollectionFour($id, $goalNo);
                         $res->isSuccess = TRUE;
                         $res->code = 80;
                         $res->message = "1회 최초 체크 컬렉션 발급 성공";
                         echo json_encode($res, JSON_NUMERIC_CHECK);
                         return;
                     }
+                    else if(threeDaysDone($id, $goalNo)&&(!alreadySetCollectionFive($id, $goalNo))){
+                        getCollectionFive($id, $goalNo);
+                        $res->isSuccess = TRUE;
+                        $res->code = 80;
+                        $res->message = "3회 연속 체크 컬렉션 발급 성공";
+                        echo json_encode($res, JSON_NUMERIC_CHECK);
+                        return;
+                    }
+                    else if(fiveDaysDone($id, $goalNo)&&(!alreadySetCollectionSix($id, $goalNo))){
+                        getCollectionSix($id, $goalNo);
+                        $res->isSuccess = TRUE;
+                        $res->code = 80;
+                        $res->message = "5회 연속 체크 컬렉션 발급 성공";
+                        echo json_encode($res, JSON_NUMERIC_CHECK);
+                        return;
+                    }
+                    else if(tenDaysDone($id, $goalNo)&&(!alreadySetCollectionSeven($id, $goalNo))){
+                        getCollectionSeven($id, $goalNo);
+                        $res->isSuccess = TRUE;
+                        $res->code = 80;
+                        $res->message = "10회 연속 체크 컬렉션 발급 성공";
+                        echo json_encode($res, JSON_NUMERIC_CHECK);
+                        return;
+                    }
                     else{
                         $res->isSuccess = FALSE;
                         $res->code = 445;
-                        $res->message = "컬렉션 발급 실패";
+                        $res->message = "컬렉션 발급 실패. 이미 등록된 컬렉션이거나 컬렉션 발급 대상이 아닙니다.";
                         echo json_encode($res, JSON_NUMERIC_CHECK);
                         return;
                     }
                 }
-            }
+
 
         case "getCollection":
             $jwt = $_SERVER["HTTP_X_ACCESS_TOKEN"];//사용자가 가지고 있는 토큰이 유효한지 확인하고

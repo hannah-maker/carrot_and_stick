@@ -179,6 +179,7 @@ function oneDayDone($id, $goalNo){
     $query = "SELECT EXISTS(SELECT * FROM (SELECT curr.goalNo
      , curr.createdAt
      , 1 + DATEDIFF(curr.createdAt, MAX(streak.createdAt)) AS consecutive
+     , curr.isDeleted
   FROM GoalCheck curr
   LEFT OUTER
   JOIN (SELECT *
@@ -189,7 +190,7 @@ function oneDayDone($id, $goalNo){
           FROM (SELECT *
                      , (SELECT MAX(createdAt)
                           FROM GoalCheck
-                         WHERE goalNo = top.goalNo
+                         WHERE goalNo = top.goalNo and GoalCheck.isDeleted = 'N'
                            AND createdAt < top.createdAt)  AS Prev
                   FROM GoalCheck top
 		     ) withPrev
@@ -203,7 +204,8 @@ function oneDayDone($id, $goalNo){
  GROUP BY curr.goalNo, curr.createdAt
  ORDER BY curr.goalNo, curr.createdAt) checkDate
 WHERE consecutive = 1 AND DATE_FORMAT(createdAt, '%Y-%m-%d') = CURDATE()
-ORDER BY createdAt limit 1) as exist;";
+AND isDeleted = 'N'
+ORDER BY createdAt DESC limit 1) as exist;";
     $st = $pdo->prepare($query);
     $st->execute([$id, $goalNo]);
     $st->setFetchMode(PDO::FETCH_ASSOC);
@@ -219,6 +221,7 @@ function threeDaysDone($id, $goalNo){
     $query = "SELECT EXISTS(SELECT * FROM (SELECT curr.goalNo
      , curr.createdAt
      , 1 + DATEDIFF(curr.createdAt, MAX(streak.createdAt)) AS consecutive
+     , curr.isDeleted
   FROM GoalCheck curr
   LEFT OUTER
   JOIN (SELECT *
@@ -229,7 +232,7 @@ function threeDaysDone($id, $goalNo){
           FROM (SELECT *
                      , (SELECT MAX(createdAt)
                           FROM GoalCheck
-                         WHERE goalNo = top.goalNo
+                         WHERE goalNo = top.goalNo and GoalCheck.isDeleted = 'N'
                            AND createdAt < top.createdAt)  AS Prev
                   FROM GoalCheck top
 		     ) withPrev
@@ -243,6 +246,7 @@ function threeDaysDone($id, $goalNo){
  GROUP BY curr.goalNo, curr.createdAt
  ORDER BY curr.goalNo, curr.createdAt) checkDate
 WHERE consecutive = 3 AND DATE_FORMAT(createdAt, '%Y-%m-%d') = CURDATE()
+AND isDeleted = 'N'
 ORDER BY createdAt limit 1) as exist;";
     $st = $pdo->prepare($query);
     $st->execute([$id, $goalNo]);
@@ -334,7 +338,7 @@ ORDER BY createdAt limit 1) as exist;";
     return intval($res[0]["exist"]);
 }
 
-function getCollectionOneDone($id, $goalNo){
+function getCollectionFour($id, $goalNo){
     $pdo = pdoSqlConnect();
     $query = "insert into HavingCollection(userId, goalNo, collectionNo) values (?,?,4);";
     $st = $pdo->prepare($query);
@@ -343,12 +347,84 @@ function getCollectionOneDone($id, $goalNo){
     $pdo = null;
 }
 
-function alreadySetCollection($id, $goalNo, $collectionNo){
+function getCollectionFive($id, $goalNo){
+    $pdo = pdoSqlConnect();
+    $query = "insert into HavingCollection(userId, goalNo, collectionNo) values (?,?,5);";
+    $st = $pdo->prepare($query);
+    $st->execute([$id, $goalNo]);
+    $st = null;
+    $pdo = null;
+}
+
+function getCollectionSix($id, $goalNo){
+    $pdo = pdoSqlConnect();
+    $query = "insert into HavingCollection(userId, goalNo, collectionNo) values (?,?,6);";
+    $st = $pdo->prepare($query);
+    $st->execute([$id, $goalNo]);
+    $st = null;
+    $pdo = null;
+}
+
+function getCollectionSeven($id, $goalNo){
+    $pdo = pdoSqlConnect();
+    $query = "insert into HavingCollection(userId, goalNo, collectionNo) values (?,?,7);";
+    $st = $pdo->prepare($query);
+    $st->execute([$id, $goalNo]);
+    $st = null;
+    $pdo = null;
+}
+
+function alreadySetCollectionFour($id, $goalNo){
     $pdo = pdoSqlConnect();
     $query = "SELECT EXISTS(SELECT * FROM HavingCollection
-    WHERE userId = ? and goalNo =? and collectionNo =?) as exist;";
+    WHERE userId = ? and goalNo =? and collectionNo = 4) as exist;";
     $st = $pdo->prepare($query);
-    $st->execute([$id, $goalNo, $collectionNo]);
+    $st->execute([$id, $goalNo]);
+
+    $st->setFetchMode(PDO::FETCH_ASSOC);
+    $res = $st->fetchAll();
+
+    $st=null;$pdo = null;
+
+    return intval($res[0]["exist"]);
+}
+
+function alreadySetCollectionFive($id, $goalNo){
+    $pdo = pdoSqlConnect();
+    $query = "SELECT EXISTS(SELECT * FROM HavingCollection
+    WHERE userId = ? and goalNo =? and collectionNo = 5) as exist;";
+    $st = $pdo->prepare($query);
+    $st->execute([$id, $goalNo]);
+
+    $st->setFetchMode(PDO::FETCH_ASSOC);
+    $res = $st->fetchAll();
+
+    $st=null;$pdo = null;
+
+    return intval($res[0]["exist"]);
+}
+
+function alreadySetCollectionSix($id, $goalNo){
+    $pdo = pdoSqlConnect();
+    $query = "SELECT EXISTS(SELECT * FROM HavingCollection
+    WHERE userId = ? and goalNo =? and collectionNo = 6) as exist;";
+    $st = $pdo->prepare($query);
+    $st->execute([$id, $goalNo]);
+
+    $st->setFetchMode(PDO::FETCH_ASSOC);
+    $res = $st->fetchAll();
+
+    $st=null;$pdo = null;
+
+    return intval($res[0]["exist"]);
+}
+
+function alreadySetCollectionSeven($id, $goalNo){
+    $pdo = pdoSqlConnect();
+    $query = "SELECT EXISTS(SELECT * FROM HavingCollection
+    WHERE userId = ? and goalNo =? and collectionNo = 7) as exist;";
+    $st = $pdo->prepare($query);
+    $st->execute([$id, $goalNo]);
 
     $st->setFetchMode(PDO::FETCH_ASSOC);
     $res = $st->fetchAll();
@@ -360,10 +436,12 @@ function alreadySetCollection($id, $goalNo, $collectionNo){
 
 function getUserCollection($id){
     $pdo = pdoSqlConnect();
-    $query = "SELECT collectionTB.no, imageUrl FROM HavingCollection
+    $query = "SELECT collectionTB.no, imageUrl, COUNT(collectionNo) cnt FROM HavingCollection
 INNER JOIN (SELECT * FROM Collection) collectionTB
 on collectionNo = collectionTB.no
-WHERE userId = ?";
+WHERE userId = ?
+GROUP BY collectionNo, collectionTB.no
+ORDER BY collectionTB.no;";
     $st = $pdo->prepare($query);
     $st->execute([$id]);
     $st->setFetchMode(PDO::FETCH_ASSOC);
