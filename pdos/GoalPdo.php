@@ -1,5 +1,28 @@
 <?php
 
+function checkPageList($id){
+    $pdo = pdoSqlConnect();
+    $query = "select no, contents as goal, date_format(createdAt, '%Y-%m-%d') as createdAt from GoalList
+where userId = ? and isDeleted = 'N'
+order by createdAt;";
+    $st = $pdo->prepare($query);
+    $st->execute([$id]);
+    $st->setFetchMode(PDO::FETCH_ASSOC);
+    $res = $st->fetchAll();
+    for($i=0; $i < sizeof($res); $i++){
+        $query = "select date_format(createdAt, '%Y-%m-%d') as createdAt from GoalCheck
+where userId = ? and goalNo = ? and isDeleted = 'N'
+order by createdAt desc limit 3;";
+        $st = $pdo->prepare($query);
+        $st->execute([$id, $res[$i]["no"]]);
+        $st->setFetchMode(PDO::FETCH_ASSOC);
+        $res1 = $st->fetchAll();
+        $res[$i]["checkResult"] = $res1;
+    }
+    return $res;
+}
+
+
 function goalList($id, $goalNo){
     $pdo = pdoSqlConnect();
     $query = "select no, contents, createdAt from GoalList

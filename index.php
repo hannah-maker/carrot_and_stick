@@ -30,6 +30,8 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) 
     $r->addRoute('POST', '/goal', ['GoalController', 'addGoal']);
     $r->addRoute('GET', '/goal/ongoing', ['GoalController', 'ongoingGoal']);
     $r->addRoute('GET', '/goal/finished', ['GoalController', 'finishedGoal']);
+    $r->addRoute('GET', '/goal/checkList', ['GoalController', 'checkListPage']);
+
     $r->addRoute('GET', '/goal/{goalNo}', ['GoalController', 'goalListDetail']);
 
     $r->addRoute('PATCH', '/goal', ['GoalController', 'updateGoal']);
@@ -39,63 +41,63 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) 
     $r->addRoute('POST', '/collection', ['IndexController', 'postCollection']);
     $r->addRoute('GET', '/collection', ['IndexController', 'getCollection']);
 
-    $r->addRoute('GET', '/movie/latest', ['IndexController', 'movieGenre']);
-//    $r->addRoute('GET', '/movie/list', ['IndexController', 'movieList']);
-    $r->addRoute('GET', '/genre', ['IndexController', 'genreList']);
-
-    $r->addRoute('GET', '/test', ['IndexController', 'test']);
-
-    $r->addRoute('GET', '/contents/{contentsNo}/detail', ['IndexController', 'movieDetail']);
-
-    $r->addRoute('GET', '/movie/{genreNo}/list', ['IndexController', 'selectMovieGenre']); //장르별 영화 리스트
-    $r->addRoute('GET', '/movie/list/popular', ['IndexController', 'movieDefaultPopular']);
-    $r->addRoute('GET', '/movie/list/newAdd', ['IndexController', 'movieNewAdd']);
-
-    $r->addRoute('GET', '/movie/{genreNo1}/list/{genreNo2}', ['IndexController', 'selectSecondGenre']);
-    $r->addRoute('GET', '/movie/{genreNo}/popular', ['IndexController', 'genrePopular']);
-    $r->addRoute('GET', '/movie/{genreNo}/newAdd', ['IndexController', 'genreNewAdd']);
-
-    $r->addRoute('POST', '/contents/scrap', ['ScrapController', 'contentsScrap']);
-    $r->addRoute('GET', '/user/scrap', ['ScrapController', 'myScrap']);
-    $r->addRoute('GET', '/user/tv', ['ScrapController', 'tvWatchingList']);
-    $r->addRoute('GET', '/user/movie', ['ScrapController', 'movieWatchingList']);
-    $r->addRoute('GET', '/user/contents', ['ScrapController', 'contentsHistory']);
-
-    $r->addRoute('POST', '/contents/likes', ['ScrapController', 'contentsLike']);
-    $r->addRoute('POST', '/contents/dislikes', ['ScrapController', 'contentsDislikes']);
-    $r->addRoute('POST', '/contents/watching', ['ScrapController', 'watchingVideo']);
-
-    $r->addRoute('GET', '/contents/{contentsNo}/similar', ['IndexController', 'similarContents']);
-    $r->addRoute('GET', '/movie/main', ['IndexController', 'movieMain']);
-    $r->addRoute('GET', '/tv/main', ['IndexController', 'tvMain']);
-    $r->addRoute('GET', '/contents/main', ['IndexController', 'contentsMain']);
-
-    $r->addRoute('GET', '/contents/{genreNo}/list', ['IndexController', 'selectContentsGenre']); //장르별 콘텐츠 리스트
-    $r->addRoute('GET', '/contents/list/popular', ['IndexController', 'contentsPopular']);
-    $r->addRoute('GET', '/contents/list/newAdd', ['IndexController', 'contentsNewAdd']);
-    $r->addRoute('GET', '/contents/{genreNo1}/list/{genreNo2}', ['IndexController', 'contentsSecondGenre']);
-    $r->addRoute('GET', '/contents/{genreNo}/popular', ['IndexController', 'contentsGenrePopular']);
-    $r->addRoute('GET', '/contents/{genreNo}/newAdd', ['IndexController', 'contentsGenreNewAdd']);
-
-    $r->addRoute('GET', '/tv/{genreNo}/list', ['IndexController', 'selectTVGenre']); //장르별 콘텐츠 리스트
-    $r->addRoute('GET', '/tv/list/popular', ['IndexController', 'tvPopular']);
-    $r->addRoute('GET', '/tv/list/newAdd', ['IndexController', 'tvNewAdd']);
-    $r->addRoute('GET', '/tv/{genreNo}/newAdd', ['IndexController', 'tvGenreNewAdd']);
-    $r->addRoute('GET', '/tv/{genreNo1}/list/{genreNo2}', ['IndexController', 'tvSecondGenre']);
-    $r->addRoute('GET', '/tv/{genreNo}/popular', ['IndexController', 'tvGenrePopular']);
-
-    $r->addRoute('GET', '/contents/search', ['IndexController', 'searchContents']);
-    $r->addRoute('GET', '/contents/latest', ['IndexController', 'latestContents']);
-    $r->addRoute('POST', '/contents', ['IndexController', 'addContents']);
-    $r->addRoute('PATCH', '/contents', ['IndexController', 'updateContents']);
-    $r->addRoute('DELETE', '/contents', ['IndexController', 'deleteContents']);
-    $r->addRoute('GET', '/sendFcm', ['IndexController', 'sendFcm']);
-    $r->addRoute('GET', '/validateJWT', ['MainController', 'validateJWT']);
-
-    $r->addRoute('GET', '/', ['IndexController', 'index']);
-    $r->addRoute('GET', '/listTest', ['ScrapController', 'list']);
-//    $r->addRoute('GET', '/user', ['MainController', 'user']);//user/list 로 수정하면 사용가능 get url이 두개잖아.
-    $r->addRoute('GET', '/user/all', ['MainController', 'userAll']);
+//    $r->addRoute('GET', '/movie/latest', ['IndexController', 'movieGenre']);
+////    $r->addRoute('GET', '/movie/list', ['IndexController', 'movieList']);
+//    $r->addRoute('GET', '/genre', ['IndexController', 'genreList']);
+//
+//    $r->addRoute('GET', '/test', ['IndexController', 'test']);
+//
+//    $r->addRoute('GET', '/contents/{contentsNo}/detail', ['IndexController', 'movieDetail']);
+//
+//    $r->addRoute('GET', '/movie/{genreNo}/list', ['IndexController', 'selectMovieGenre']); //장르별 영화 리스트
+//    $r->addRoute('GET', '/movie/list/popular', ['IndexController', 'movieDefaultPopular']);
+//    $r->addRoute('GET', '/movie/list/newAdd', ['IndexController', 'movieNewAdd']);
+//
+//    $r->addRoute('GET', '/movie/{genreNo1}/list/{genreNo2}', ['IndexController', 'selectSecondGenre']);
+//    $r->addRoute('GET', '/movie/{genreNo}/popular', ['IndexController', 'genrePopular']);
+//    $r->addRoute('GET', '/movie/{genreNo}/newAdd', ['IndexController', 'genreNewAdd']);
+//
+//    $r->addRoute('POST', '/contents/scrap', ['ScrapController', 'contentsScrap']);
+//    $r->addRoute('GET', '/user/scrap', ['ScrapController', 'myScrap']);
+//    $r->addRoute('GET', '/user/tv', ['ScrapController', 'tvWatchingList']);
+//    $r->addRoute('GET', '/user/movie', ['ScrapController', 'movieWatchingList']);
+//    $r->addRoute('GET', '/user/contents', ['ScrapController', 'contentsHistory']);
+//
+//    $r->addRoute('POST', '/contents/likes', ['ScrapController', 'contentsLike']);
+//    $r->addRoute('POST', '/contents/dislikes', ['ScrapController', 'contentsDislikes']);
+//    $r->addRoute('POST', '/contents/watching', ['ScrapController', 'watchingVideo']);
+//
+//    $r->addRoute('GET', '/contents/{contentsNo}/similar', ['IndexController', 'similarContents']);
+//    $r->addRoute('GET', '/movie/main', ['IndexController', 'movieMain']);
+//    $r->addRoute('GET', '/tv/main', ['IndexController', 'tvMain']);
+//    $r->addRoute('GET', '/contents/main', ['IndexController', 'contentsMain']);
+//
+//    $r->addRoute('GET', '/contents/{genreNo}/list', ['IndexController', 'selectContentsGenre']); //장르별 콘텐츠 리스트
+//    $r->addRoute('GET', '/contents/list/popular', ['IndexController', 'contentsPopular']);
+//    $r->addRoute('GET', '/contents/list/newAdd', ['IndexController', 'contentsNewAdd']);
+//    $r->addRoute('GET', '/contents/{genreNo1}/list/{genreNo2}', ['IndexController', 'contentsSecondGenre']);
+//    $r->addRoute('GET', '/contents/{genreNo}/popular', ['IndexController', 'contentsGenrePopular']);
+//    $r->addRoute('GET', '/contents/{genreNo}/newAdd', ['IndexController', 'contentsGenreNewAdd']);
+//
+//    $r->addRoute('GET', '/tv/{genreNo}/list', ['IndexController', 'selectTVGenre']); //장르별 콘텐츠 리스트
+//    $r->addRoute('GET', '/tv/list/popular', ['IndexController', 'tvPopular']);
+//    $r->addRoute('GET', '/tv/list/newAdd', ['IndexController', 'tvNewAdd']);
+//    $r->addRoute('GET', '/tv/{genreNo}/newAdd', ['IndexController', 'tvGenreNewAdd']);
+//    $r->addRoute('GET', '/tv/{genreNo1}/list/{genreNo2}', ['IndexController', 'tvSecondGenre']);
+//    $r->addRoute('GET', '/tv/{genreNo}/popular', ['IndexController', 'tvGenrePopular']);
+//
+//    $r->addRoute('GET', '/contents/search', ['IndexController', 'searchContents']);
+//    $r->addRoute('GET', '/contents/latest', ['IndexController', 'latestContents']);
+//    $r->addRoute('POST', '/contents', ['IndexController', 'addContents']);
+//    $r->addRoute('PATCH', '/contents', ['IndexController', 'updateContents']);
+//    $r->addRoute('DELETE', '/contents', ['IndexController', 'deleteContents']);
+//    $r->addRoute('GET', '/sendFcm', ['IndexController', 'sendFcm']);
+//    $r->addRoute('GET', '/validateJWT', ['MainController', 'validateJWT']);
+//
+//    $r->addRoute('GET', '/', ['IndexController', 'index']);
+//    $r->addRoute('GET', '/listTest', ['ScrapController', 'list']);
+////    $r->addRoute('GET', '/user', ['MainController', 'user']);//user/list 로 수정하면 사용가능 get url이 두개잖아.
+//    $r->addRoute('GET', '/user/all', ['MainController', 'userAll']);
 ////
 //    $r->addRoute('GET', '/user/article', ['MainController', 'myArticle']);
 //    $r->addRoute('GET', '/user/comment', ['IndexController', 'myComment']);
