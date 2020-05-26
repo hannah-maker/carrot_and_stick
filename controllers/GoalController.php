@@ -220,7 +220,7 @@ try {
             }
             $data = getDataByJWToken($jwt, JWT_SECRET_KEY);
             $id = $data->id;
-            $goalNo = $req->goalNo;
+            $goalNo = $_GET["goalNo"];
 
             if(empty($goalNo)){
                 $res->isSucces = FALSE;
