@@ -24,6 +24,7 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) 
 
     $r->addRoute('GET', '/user', ['MainController', 'user']); //마이페이지 조회
     $r->addRoute('POST', '/user', ['MainController', 'signUp']);
+    $r->addRoute('PATCH', '/user', ['MainController', 'deleteUser']);
     $r->addRoute('POST', '/user/token', ['MainController', 'login']);
 
     $r->addRoute('GET', '/goal/recommendation', ['GoalController', 'login']);

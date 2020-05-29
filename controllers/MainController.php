@@ -104,7 +104,7 @@ try {
                     return;
                 } else {
                     $hash = password_hash($pw, PASSWORD_DEFAULT);
-                    $res->result = signUp($id, $hash, $nickName);
+                    signUp($id, $hash, $nickName);
                     $res->isSuccess = TRUE;
                     $res->code = 100;
                     $res->message = "회원 가입 성공!";
@@ -202,6 +202,62 @@ try {
                     }
                 }
                 }
+
+        case "deleteUser":
+            $jwt = $_SERVER["HTTP_X_ACCESS_TOKEN"];//사용자가 가지고 있는 토큰이 유효한지 확인하고
+            if (!isValidHeader($jwt, JWT_SECRET_KEY)) {
+                $res->isSuccess = FALSE;
+                $res->code = 201;
+                $res->message = "유효하지 않은 토큰입니다";
+                echo json_encode($res, JSON_NUMERIC_CHECK);
+                addErrorLogs($errorLogs, $res, $req);
+                return;
+            }
+            $data = getDataByJWToken($jwt, JWT_SECRET_KEY);
+            $id = $data->id;
+            $pw = $req->pw;
+            $conn = mysqli_connect("database-1.cdv6gaks3mrb.ap-northeast-2.rds.amazonaws.com", "admin", "Hsh0913**", "Carrot");
+            if (mysqli_connect_errno())
+            {
+                echo "Failed to connect to MySQL: " . mysqli_connect_error();
+            }
+            mysqli_set_charset($conn, "utf8");
+            $sql = "select pw from User where id = '$id'";
+            $resp = mysqli_query($conn, $sql);
+            $row = mysqli_fetch_array($resp);
+            $hash = $row['pw'];
+
+            if (empty($pw)) {
+                $res->isSucces = FALSE;
+                $res->code = 00;
+                $res->message = "공백이 입력됐습니다.";
+                echo json_encode($res, JSON_NUMERIC_CHECK);
+                return;
+            } else {
+                if (deletedUser($id)) {
+                    $res->isSuccess = FALSE;
+                    $res->code = 192;
+                    $res->message = "이미 삭제된 계정입니다.";
+                    echo json_encode($res, JSON_NUMERIC_CHECK);
+                    return;
+                } else {
+                    if (password_verify($pw, $hash)) {
+                        deleteUser($id);
+                        $res->isSuccess = TRUE;
+                        $res->code = 190;
+                        $res->message = "비밀번호 일치, user 삭제 성공";
+                        echo json_encode($res, JSON_NUMERIC_CHECK);
+                        return;
+                    } else {
+                        $res->isSuccess = FALSE;
+                        $res->code = 191;
+                        $res->message = "비밀번호가 일치하지 않습니다.";
+                        echo json_encode($res, JSON_NUMERIC_CHECK);
+                        break;
+                    }
+                }
+            }
+
 
         case "validateJWT" :
             $jwt = $_SERVER["HTTP_X_ACCESS_TOKEN"];//사용자가 가지고 있는 토큰이 유효한지 확인하고

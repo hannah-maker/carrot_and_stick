@@ -9,14 +9,35 @@ function signUp($id, $hash, $nickName)
     $pdo = null;
 }
 
+function deleteUser($id){
+    $pdo = pdoSqlConnect();
+    $query = "UPDATE User
+SET isDeleted = 'Y'
+WHERE id = ?";
+    $st = $pdo->prepare($query);
+    $st->execute([$id]);
+    $st = null;
+    $pdo = null;
+}
+
 function validUser($id){
 
     $pdo = pdoSqlConnect();
-    $query = "SELECT EXISTS(SELECT * FROM User WHERE id = ?) AS exist;";
+    $query = "SELECT EXISTS(SELECT * FROM User WHERE id = ? and isDeleted = 'N') AS exist;";
     $st = $pdo->prepare($query);
     $st->execute([$id]);
     $res = $st->fetchAll();
 
+    return intval($res[0]["exist"]);
+}
+
+function deletedUser($id){
+
+    $pdo = pdoSqlConnect();
+    $query = "SELECT EXISTS(SELECT * FROM User WHERE id = ? and isDeleted = 'Y') AS exist;";
+    $st = $pdo->prepare($query);
+    $st->execute([$id]);
+    $res = $st->fetchAll();
     return intval($res[0]["exist"]);
 }
 
