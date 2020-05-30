@@ -459,7 +459,7 @@ function alreadySetCollectionSeven($id, $goalNo){
 
 function getUserCollection($id){
     $pdo = pdoSqlConnect();
-    $query = "SELECT collectionTB.no, imageUrl, COUNT(collectionNo) cnt FROM HavingCollection
+    $query = "SELECT collectionTB.no, name, imageUrl, COUNT(collectionNo) cnt FROM HavingCollection
 INNER JOIN (SELECT * FROM Collection) collectionTB
 on collectionNo = collectionTB.no
 WHERE userId = ?
