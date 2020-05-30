@@ -60,6 +60,7 @@ try {
             else{
                     if(oneDayDone($id, $goalNo)&&(!alreadySetCollectionFour($id, $goalNo))) {
                         getCollectionFour($id, $goalNo);
+                        $res->result =latestCollection($id);
                         $res->isSuccess = TRUE;
                         $res->code = 80;
                         $res->message = "1회 최초 체크 컬렉션 발급 성공";
@@ -68,6 +69,7 @@ try {
                     }
                     else if(threeDaysDone($id, $goalNo)&&(!alreadySetCollectionFive($id, $goalNo))){
                         getCollectionFive($id, $goalNo);
+                        $res->result =latestCollection($id);
                         $res->isSuccess = TRUE;
                         $res->code = 80;
                         $res->message = "3회 연속 체크 컬렉션 발급 성공";
@@ -76,6 +78,7 @@ try {
                     }
                     else if(fiveDaysDone($id, $goalNo)&&(!alreadySetCollectionSix($id, $goalNo))){
                         getCollectionSix($id, $goalNo);
+                        $res->result =latestCollection($id);
                         $res->isSuccess = TRUE;
                         $res->code = 80;
                         $res->message = "5회 연속 체크 컬렉션 발급 성공";
@@ -84,6 +87,7 @@ try {
                     }
                     else if(tenDaysDone($id, $goalNo)&&(!alreadySetCollectionSeven($id, $goalNo))){
                         getCollectionSeven($id, $goalNo);
+                        $res->result =latestCollection($id);
                         $res->isSuccess = TRUE;
                         $res->code = 80;
                         $res->message = "10회 연속 체크 컬렉션 발급 성공";

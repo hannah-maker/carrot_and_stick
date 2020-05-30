@@ -1,5 +1,21 @@
 <?php
 
+function latestCollection($id){
+    $pdo = pdoSqlConnect();
+    $query = "SELECT collectionTB.no, name, imageUrl, HavingCollection.createdAt FROM HavingCollection
+INNER JOIN (SELECT * FROM Collection) collectionTB
+on collectionNo = collectionTB.no
+WHERE userId = ?
+ORDER BY HavingCollection.createdAt desc limit 1;";
+    $st = $pdo->prepare($query);
+    $st->execute([$id]);
+    $st->setFetchMode(PDO::FETCH_ASSOC);
+    $res = $st->fetchAll();
+    $st = null;
+    $pdo = null;
+    return $res[0];;
+}
+
 function checkPageList($id){
     $pdo = pdoSqlConnect();
     $query = "select no, contents as goal, date_format(createdAt, '%Y-%m-%d') as createdAt from GoalList
