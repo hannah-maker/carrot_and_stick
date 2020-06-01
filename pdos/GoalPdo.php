@@ -16,6 +16,28 @@ ORDER BY HavingCollection.createdAt desc limit 1;";
     return $res[0];;
 }
 
+function keepGoingGoal($id){
+    $pdo = pdoSqlConnect();
+    $query = "select * from (select GoalList.no as no, contents as goal, GoalList.createdAt, userCollectionTB.name , userCollectionTB.imageUrl, GoalList.isDeleted from GoalList
+   left join
+    (SELECT collectionNo, HavingCollection.goalNo, imageUrl, name, HavingCollection.createdAt, HavingCollection.no FROM HavingCollection
+        inner join
+        (SELECT * FROM Collection) collectionTB
+        on collectionTB.no = HavingCollection.collectionNo) userCollectionTB
+    on GoalList.no = userCollectionTB.goalNo
+where GoalList.userId = ? and GoalList.isDeleted = 'N'
+group by userCollectionTB.createdAt desc
+order by userCollectionTB.createdAt desc) goalTB
+group by goalTB.no;";
+    $st = $pdo->prepare($query);
+    $st->execute([$id]);
+    $st->setFetchMode(PDO::FETCH_ASSOC);
+    $res = $st->fetchAll();
+    $st = null;
+    $pdo = null;
+    return $res;
+}
+
 function checkPageList($id){
     $pdo = pdoSqlConnect();
     $query = "select no, contents as goal, date_format(createdAt, '%Y-%m-%d') as createdAt from GoalList
@@ -179,8 +201,17 @@ ORDER BY createdAt DESC limit 1;";
 
 function finishedGoal($id){
     $pdo = pdoSqlConnect();
-    $query = "select contents as goal, createdAt, isDeleted from GoalList
-where userId = ? and isDeleted = 'Y'";
+    $query = "select * from (select GoalList.no as no, contents as goal, GoalList.createdAt, userCollectionTB.name , userCollectionTB.imageUrl, GoalList.isDeleted from GoalList
+   left join
+    (SELECT collectionNo, HavingCollection.goalNo, imageUrl, name, HavingCollection.createdAt, HavingCollection.no FROM HavingCollection
+        inner join
+        (SELECT * FROM Collection) collectionTB
+        on collectionTB.no = HavingCollection.collectionNo) userCollectionTB
+    on GoalList.no = userCollectionTB.goalNo
+where GoalList.userId = ? and GoalList.isDeleted = 'Y'
+group by userCollectionTB.createdAt desc
+order by userCollectionTB.createdAt desc) goalTB
+group by goalTB.no;";
     $st = $pdo->prepare($query);
     $st->execute([$id]);
     $st->setFetchMode(PDO::FETCH_ASSOC);

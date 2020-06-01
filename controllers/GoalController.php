@@ -58,7 +58,7 @@ try {
             $data = getDataByJWToken($jwt, JWT_SECRET_KEY);
             $id = $data->id;
 
-            if (ongoingGoal($id) == null) {
+            if (keepGoingGoal($id) == null) {
                 http_response_code(200);
                 $res->isSuccess = FALSE;
                 $res->code = 400;
@@ -67,7 +67,7 @@ try {
                 return;
             }
             http_response_code(200);
-            $res->result = ongoingGoal($id);
+            $res->result = keepGoingGoal($id);
             $res->isSuccess = TRUE;
             $res->code = 70;
             $res->message = "진행중인 나의 목표 조회";
@@ -158,8 +158,8 @@ try {
             if (finishedGoal($id) == null) {
                 http_response_code(200);
                 $res->isSuccess = FALSE;
-                $res->code = 400;
-                $res->message = "진행중인 목표가 없습니다.";
+                $res->code = 399;
+                $res->message = "종료된 목표가 없습니다.";
                 echo json_encode($res, JSON_NUMERIC_CHECK);
                 return;
             }
