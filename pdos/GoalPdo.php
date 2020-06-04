@@ -48,9 +48,12 @@ order by createdAt;";
     $st->setFetchMode(PDO::FETCH_ASSOC);
     $res = $st->fetchAll();
     for($i=0; $i < sizeof($res); $i++){
-        $query = "select date_format(createdAt, '%Y-%m-%d') as createdAt from GoalCheck
-where userId = ? and goalNo = ? and isDeleted = 'N'
-order by createdAt desc limit 3;";
+        $query = "SELECT createdAt FROM date_t
+left join (SELECT date_format(createdAt, '%Y-%m-%d') as createdAt, userId, goalNo, isDeleted FROM GoalCheck
+    WHERE userId = ? and goalNo = ? and isDeleted = 'N')checkTB
+on d = checkTB.createdAt
+WHERE d BETWEEN DATE_ADD(NOW(),INTERVAL -1 WEEK ) AND NOW()
+order by d desc limit 3;";
         $st = $pdo->prepare($query);
         $st->execute([$id, $res[$i]["no"]]);
         $st->setFetchMode(PDO::FETCH_ASSOC);
