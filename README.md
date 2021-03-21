@@ -12,3 +12,25 @@
 
 ### 어플리케이션 ERD
 ![image](https://user-images.githubusercontent.com/61000200/111908678-71486300-8a9d-11eb-9597-6fae0b844b32.png)
+
+------------------------------------
+## API LIST
+
+1. GET /user
+2. POST /user
+3. PATCH /user
+4. POST /user/token
+5. GET /goal/ongoing
+6. GET /goal/finished
+7. GET /goal/checkList
+8. GET /goal/{goalNo}
+9. PATCH /goal
+10. POST /goal/check
+11. POST /collection
+12. GET /collection
+
+-----------------------------------
+## 주요 로직
+
+![image](https://user-images.githubusercontent.com/61000200/111910947-ca68c480-8aa6-11eb-97c8-69e0019e1667.png)
+
