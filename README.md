@@ -16,7 +16,7 @@
 ------------------------------------
 ## API LIST
 
-1. GET/user
+1. GET    /user
 2. POST   /user
 3. PATCH  /user
 4. POST   /user/token
