@@ -10,6 +10,7 @@
 
 ------------------------------------
 ### Directory
+'''
 ├── controllers                          
 │   ├── GoalController.php      # 주요 기능 로직
 │   ├── MainController.php      # 회원 관련 기능 로직                        
@@ -22,6 +23,7 @@
 ├── * composer.lock              	 
 ├── index.php                       # Routing 처리, logger 생성, ...                    		
 └── README.md
+'''
 
 ### 어플리케이션 ERD
 ![image](https://user-images.githubusercontent.com/61000200/111908678-71486300-8a9d-11eb-9597-6fae0b844b32.png)
