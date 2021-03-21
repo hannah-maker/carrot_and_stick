@@ -16,18 +16,18 @@
 ------------------------------------
 ## API LIST
 
-1. GET /user
-2. POST /user
-3. PATCH /user
-4. POST /user/token
-5. GET /goal/ongoing
-6. GET /goal/finished
-7. GET /goal/checkList
-8. GET /goal/{goalNo}
-9. PATCH /goal
-10. POST /goal/check
-11. POST /collection
-12. GET /collection
+1. GET    /user
+2. POST   /user
+3. PATCH  /user
+4. POST   /user/token
+5. GET    /goal/ongoing
+6. GET    /goal/finished
+7. GET    /goal/checkList
+8. GET    /goal/{goalNo}
+9. PATCH  /goal
+10. POST  /goal/check
+11. POST  /collection
+12. GET   /collection
 
 -----------------------------------
 ## 주요 로직
