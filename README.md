@@ -12,4 +12,4 @@
 다운로드 링크: https://play.google.com/store/apps/details?id=com.carrot.carrotandstick
 ------------------------------------
 
-![Uploading image.png…]()
+<img width="987" alt="스크린샷 2021-03-21 오후 11 21 00" src="https://user-images.githubusercontent.com/61000200/111908379-65a86c80-8a9c-11eb-8fdf-8598561144d1.png">
