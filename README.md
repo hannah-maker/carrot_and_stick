@@ -32,5 +32,5 @@
 -----------------------------------
 ## 주요 로직
 
-![image](https://user-images.githubusercontent.com/61000200/111910947-ca68c480-8aa6-11eb-97c8-69e0019e1667.png)
+![image](https://user-images.githubusercontent.com/61000200/111911047-259ab700-8aa7-11eb-8a81-d1a30ea0ea4b.png)
 
