@@ -174,7 +174,7 @@ try {
         case "login":
             $id = $req->id;
             $pw = $req->pw;
-            $conn = mysqli_connect("database-1.cdv6gaks3mrb.ap-northeast-2.rds.amazonaws.com", "admin", "Hsh0913**", "Carrot");
+            $conn = mysqli_connect("host", "admin", "pw", "Carrot");
             if (mysqli_connect_errno())
             {
                 echo "Failed to connect to MySQL: " . mysqli_connect_error();
@@ -231,7 +231,7 @@ try {
             $data = getDataByJWToken($jwt, JWT_SECRET_KEY);
             $id = $data->id;
             $pw = $req->pw;
-            $conn = mysqli_connect("database-1.cdv6gaks3mrb.ap-northeast-2.rds.amazonaws.com", "admin", "Hsh0913**", "Carrot");
+            $conn = mysqli_connect("host", "admin", "pw", "dbname");
             if (mysqli_connect_errno())
             {
                 echo "Failed to connect to MySQL: " . mysqli_connect_error();
