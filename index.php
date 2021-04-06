@@ -1,12 +1,9 @@
 <?php
 require './pdos/DatabasePdo.php';
-//require './pdos/IndexPdo.php';
 require './vendor/autoload.php';
 
 require './pdos/UserPdo.php';//로그인, 가입 등
-//require './pdos/BoardPdo.php';//게시판 관리
 require './pdos/ReviewPdo.php';
-//require './pdos/MoviePdo.php';
 require './pdos/GoalPdo.php';
 
 use \Monolog\Logger as Logger;
