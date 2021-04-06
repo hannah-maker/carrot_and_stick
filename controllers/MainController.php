@@ -358,44 +358,6 @@ try {
             break;
         }
 
-        case "listUp":
-
-            http_response_code(200);
-            $res->result = listUp();
-            $res->isSuccess = TRUE;
-            $res->code = 100;
-            $res->message = "리뷰 검색";
-            echo json_encode($res, JSON_NUMERIC_CHECK);
-            break;
-
-        case "lectureDetail":
-            $lectureNo = $_GET["no"];
-            http_response_code(200);
-            $res->result = lectureDetail($lectureNo);
-            $res->isSuccess = TRUE;
-            $res->code = 100;
-            $res->message = "번호별 강의 개요 조회";
-            echo json_encode($res, JSON_NUMERIC_CHECK);
-            break;
-
-        case "reviewList":
-            http_response_code(200);
-            $res->result = reviewList();
-            $res->isSuccess = TRUE;
-            $res->code = 100;
-            $res->message = "강의 리뷰 리스트 조회";
-            echo json_encode($res, JSON_NUMERIC_CHECK);
-            break;
-
-        case "reviewScroll":
-            $lastNo = $_GET["lastNo"];
-            http_response_code(200);
-            $res->result = reviewScroll($lastNo);
-            $res->isSuccess = TRUE;
-            $res->code = 100;
-            $res->message = "강의 리뷰 무한 스크롤";
-            echo json_encode($res, JSON_NUMERIC_CHECK);
-            break;
 
 
 
