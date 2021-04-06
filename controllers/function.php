@@ -6,6 +6,7 @@ use PHPMailer\PHPMailer\Exception;
 use Google\Auth\ApplicationDefaultCredentials;
 use GuzzleHttp\Client;
 use GuzzleHttp\HandlerStack;
+
 $res = (Object)Array();
 function getSQLErrorException($errorLogs, $e, $req)
 {
@@ -15,6 +16,30 @@ function getSQLErrorException($errorLogs, $e, $req)
     $res->message = "SQL Exception -> " . $e->getTraceAsString();
     echo json_encode($res);
     addErrorLogs($errorLogs, $res, $req);
+}
+
+function getUserInfoByKakaoToken($accessToken){
+    $token = $accessToken;
+    $header = "Bearer ".$token; // Bearer 다음에 공백 추가
+    $url = "https://kapi.kakao.com/v2/user/me";
+    $is_post = false;
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_POST, $is_post);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    $headers = array();
+    $headers[] = "Authorization: ".$header;
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+    $response = curl_exec ($ch);
+    $status_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+    curl_close ($ch);
+
+    if($status_code == 200) {
+        return array(true, json_decode($response));
+    } else {
+        return array(false, $response);
+    }
 }
 
 function isValidHeader($jwt, $key)

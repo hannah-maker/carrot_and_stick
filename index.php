@@ -12,6 +12,11 @@ require './pdos/GoalPdo.php';
 use \Monolog\Logger as Logger;
 use Monolog\Handler\StreamHandler;
 
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Max-Age: 86400');
+header('Access-Control-Allow-Headers: x-requested-with');
+header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
+
 date_default_timezone_set('Asia/Seoul');
 ini_set('default_charset', 'utf8mb4');
 //$fcmToken = "d6DvQXqrVJc:APA91bFUL1iYVCY-k8Cr18WJ40GoqPw-EJJ0Vra8owhxNVuvJF-S2j6YRk8vb7iKju74LGaAII_ml40OQMLzhMpcZF2iPE58nEpNaezATBmffjT6WlKNK-fMtHwKdaA6OLJzGlIOjZ9O";
@@ -21,11 +26,40 @@ ini_set('default_charset', 'utf8mb4');
 //Main Server API
 $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) {
     /* ******************   Test   ****************** */
+    $r->addRoute('GET', '/testAPI', ['IndexController', 'test']);
+    $r->addRoute('GET', '/board/{boardNo}', ['GoalController', 'boardDetail']);
+    $r->addRoute('GET', '/boards', ['GoalController', 'boardList']);
+    $r->addRoute('POST', '/board', ['GoalController', 'addArticle']);
+    $r->addRoute('GET', '/category', ['GoalController', 'categoryList']);
+
+
+
+
+//    $r->addRoute('GET', '/goal/{goalNo}', ['GoalController', 'goalListDetail']);
+
+
+    $r->addRoute('GET', '/jwt', ['MainController', 'validateJWT']);
+    $r->addRoute('POST', '/user', ['MainController', 'signUp']);
+    $r->addRoute('POST', '/user/token', ['MainController', 'login']);
+    $r->addRoute('GET', '/data', ['MainController', 'testJwtData']);
+
+
+
+
+
+
+
+
+
+
 
     $r->addRoute('GET', '/user', ['MainController', 'user']); //마이페이지 조회
-    $r->addRoute('POST', '/user', ['MainController', 'signUp']);
+
+
+
+
+
     $r->addRoute('PATCH', '/user', ['MainController', 'deleteUser']);
-    $r->addRoute('POST', '/user/token', ['MainController', 'login']);
 
     $r->addRoute('GET', '/goal/recommendation', ['GoalController', 'login']);
     $r->addRoute('POST', '/goal', ['GoalController', 'addGoal']);
@@ -162,8 +196,6 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) 
 //    $r->addRoute('DELETE', '/delete-restaurant', ['IndexController', 'deleteRestaurant']);
 //
 //
-    $r->addRoute('GET', '/jwt', ['MainController', 'validateJwt']);
-//    $r->addRoute('POST', '/jwt', ['MainController', 'createJwt']);
 //
 
 

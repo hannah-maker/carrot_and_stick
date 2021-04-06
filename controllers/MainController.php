@@ -17,28 +17,25 @@ try {
          * API Name : JWT 유효성 검사 테스트 API
          * 마지막 수정 날짜 : 19.04.25
          */
-        case "validateJwt":
-            // jwt 유효성 검사
-
-            $jwt = $_SERVER["HTTP_X_ACCESS_TOKEN"];
-
+        // jwt 유효성 검사
+        case "validateJWT" :
+            $jwt = $_SERVER["HTTP_X_ACCESS_TOKEN"];//사용자가 가지고 있는 토큰이 유효한지 확인하고
             if (!isValidHeader($jwt, JWT_SECRET_KEY)) {
                 $res->isSuccess = FALSE;
                 $res->code = 201;
                 $res->message = "유효하지 않은 토큰입니다";
-                $res = (Object)Array();
                 echo json_encode($res, JSON_NUMERIC_CHECK);
                 addErrorLogs($errorLogs, $res, $req);
                 return;
+            }else{
+                $res->isSuccess = TRUE;
+                $res->code = 201;
+                $res->message = "유효한 토큰입니다";
+                echo json_encode($res, JSON_NUMERIC_CHECK);
+                addErrorLogs($errorLogs, $res, $req);
+                break;
             }
 
-            http_response_code(200);
-            $res->isSuccess = TRUE;
-            $res->code = 100;
-            $res->message = "테스트 성공";
-
-            echo json_encode($res, JSON_NUMERIC_CHECK);
-            break;
         /*
          * API No. 1
          * API Name : JWT 생성 테스트 API (로그인)
@@ -65,6 +62,26 @@ try {
             echo json_encode($res, JSON_NUMERIC_CHECK);
             break;
 
+        case "testJwtData":
+            $jwt = $_SERVER["HTTP_X_ACCESS_TOKEN"];//사용자가 가지고 있는 토큰이 유효한지 확인하고
+            if (!isValidHeader($jwt, JWT_SECRET_KEY)) {
+                $res->isSuccess = FALSE;
+                $res->code = 201;
+                $res->message = "유효하지 않은 토큰입니다";
+                echo json_encode($res, JSON_NUMERIC_CHECK);
+                addErrorLogs($errorLogs, $res, $req);
+                return;
+            }
+            $data = getDataByJWToken($jwt, JWT_SECRET_KEY);
+            $id = $data->id;
+            $res->result = $id;
+            $res->isSuccess = TRUE;
+            $res->code = 100;
+            $res->message = "테스트 성공";
+            echo json_encode($res, JSON_NUMERIC_CHECK);
+            break;
+
+
         case "signUp":
         {
             $pw = $req->pw;
@@ -72,10 +89,8 @@ try {
             $nickName = $req->nickName;
 
             $check_email = filter_var($id, FILTER_VALIDATE_EMAIL);
-//            $check_pw = '/^.*(?=^.{8,15}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!*@#$%^&+=]).*$/';
             $check_pw = '/^(?=.*[a-zA-Z])(?=.*[0-9]).{6,16}$/';
             $check_id = '/^[0-9a-z]{4,9}$/';
-            $check_type = '/^[1-3]{1}$/';
 
             if (empty($nickName) || empty($pw) || empty($id)) {
                 $res->isSucces = FALSE;
@@ -258,24 +273,6 @@ try {
                 }
             }
 
-
-        case "validateJWT" :
-            $jwt = $_SERVER["HTTP_X_ACCESS_TOKEN"];//사용자가 가지고 있는 토큰이 유효한지 확인하고
-            if (!isValidHeader($jwt, JWT_SECRET_KEY)) {
-                $res->isSuccess = FALSE;
-                $res->code = 201;
-                $res->message = "유효하지 않은 토큰입니다";
-                echo json_encode($res, JSON_NUMERIC_CHECK);
-                addErrorLogs($errorLogs, $res, $req);
-                return;
-            }else{
-                $res->isSuccess = TRUE;
-                $res->code = 201;
-                $res->message = "유효한 토큰입니다";
-                echo json_encode($res, JSON_NUMERIC_CHECK);
-                addErrorLogs($errorLogs, $res, $req);
-                break;
-            }
 
         case "user":
         {

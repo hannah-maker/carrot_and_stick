@@ -1,5 +1,63 @@
 <?php
 
+function boardDetail($boardNo){
+    $pdo = pdoSqlConnect();
+    $query = "SELECT * FROM Board WHERE no = ?;";
+
+    $st = $pdo->prepare($query);
+    $st->execute([$boardNo]);
+    $st->setFetchMode(PDO::FETCH_ASSOC);
+    $res = $st->fetchAll();
+    $st = null;
+    $pdo = null;
+    return $res[0];
+}
+
+function boardList(){
+    $pdo = pdoSqlConnect();
+    $query = "select Board.no, title, contents, createdAt, userId, name as type from Board
+INNER JOIN Category C on Board.type = C.no;";
+
+    $st = $pdo->prepare($query);
+    $st->execute();
+    $st->setFetchMode(PDO::FETCH_ASSOC);
+    $res = $st->fetchAll();
+    $st = null;
+    $pdo = null;
+    return $res;
+}
+
+function postBoard($id, $title, $contents, $type){
+    $pdo = pdoSqlConnect();
+    $query = "INSERT INTO Board(userId, title, contents, type) VALUES (?,?,?,?);";
+    $st = $pdo->prepare($query);
+    $st->execute([$id, $title, $contents, $type]);
+    $st = null;
+    $pdo = null;
+}
+
+function categotyList(){
+    $pdo = pdoSqlConnect();
+    $query = "SELECT * FROM Category;";
+
+    $st = $pdo->prepare($query);
+    $st->execute();
+    $st->setFetchMode(PDO::FETCH_ASSOC);
+    $res = $st->fetchAll();
+    $st = null;
+    $pdo = null;
+    return $res;
+}
+
+//function addGoal($id, $goal){
+//    $pdo = pdoSqlConnect();
+//    $query = "insert into GoalList(userId, contents) values (?,?);";
+//    $st = $pdo->prepare($query);
+//    $st->execute([$id, $goal]);
+//    $st = null;
+//    $pdo = null;
+//}
+
 function latestCollection($id){
     $pdo = pdoSqlConnect();
     $query = "SELECT collectionTB.no, name, imageUrl, HavingCollection.createdAt FROM HavingCollection

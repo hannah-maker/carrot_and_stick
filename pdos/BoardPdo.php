@@ -22,21 +22,33 @@
 //    return $res;
 //}
 
-function boardList(){
-    $pdo = pdoSqlConnect();
-    $query = "SELECT no, title, category
-                    from freeBoard
-                    ORDER BY freeBoard.no DESC;";
-    $st = $pdo->prepare($query);
-    $st->execute();
-    $st->setFetchMode(PDO::FETCH_ASSOC);
-    $res = $st->fetchAll();
+//function boardDetail($boardNo){
+//    $pdo = pdoSqlConnect();
+//    $query = "SELECT * FROM Board WHERE no = 2;";
+//    $st = $pdo->prepare($query);
+//    $st->execute([$boardNo]);
+//    $st->setFetchMode(PDO::FETCH_ASSOC);
+//    $res = $st->fetchAll();
+//
+//    $st = null;
+//    $pdo = null;
+//
+//    return $res[0];
+//}
 
-    $st = null;
-    $pdo = null;
+//function boardDetail($boardNo){
+//    $pdo = pdoSqlConnect();
+//    $query = "ELECT * FROM Board WHERE no = 2;";
+//
+//    $st = $pdo->prepare($query);
+//    $st->execute([$boardNo]);
+//    $st->setFetchMode(PDO::FETCH_ASSOC);
+//    $res = $st->fetchAll();
+//    $st = null;
+//    $pdo = null;
+//    return $res[0];
+//}
 
-    return $res;
-}
 
 function articleDetail($articleNo){
     $pdo = pdoSqlConnect();
@@ -341,17 +353,27 @@ function isExistsUser($id){
     return intval($res[0]["exist"]);
 }
 
-function writeFreeBoard($id, $title, $content){
+
+
+// 글 작성 pdo
+function postBoard($id, $title, $contents, $type){
     $pdo = pdoSqlConnect();
-    $query = "INSERT INTO freeBoard (id, title, content, category) VALUES (?,?,?,'1');";
+    $query = "INSERT INTO Board (userId, title, contents, type) VALUES (?,?,?,?);";
     $st = $pdo->prepare($query);
-    $st->execute([$id, $title, $content]);
+    $st->execute([$id, $title, $contents, $type]);
     //$st->setFetchMode(PDO::FETCH_ASSOC); insert 문에서는 빼기
     //$res = $st->fetchAll();
-
     $st = null;
     $pdo = null;
 }
+
+
+
+
+
+
+
+
 
 function writeSecretBoard($id, $title, $content){
     $pdo = pdoSqlConnect();
